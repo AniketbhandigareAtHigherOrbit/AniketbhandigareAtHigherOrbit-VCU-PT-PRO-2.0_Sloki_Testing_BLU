@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Actipro Syntax Language Definition (.langdef)
+  For use with Actipro SyntaxEditor and related products.
+  http://www.actiprosoftware.com
+
+'C for CC-RH' language V2.03.00.03 [28 Sep 2020]
+  Copyright (C) 2011, 2020 Renesas Electronics Corporation
+
+-->
+<LanguageDefinition LanguageKey="C" LanguageDescription="C for CC-RH" Creator="Renesas Electronics Corporation" Copyright="Copyright (C) 2011, 2020 Renesas Electronics Corporation" xmlns="http://schemas.actiprosoftware.com/langdef/1.0">
+	<!-- Classification types -->
+	<LanguageDefinition.ClassificationTypes>
+		<ClassificationType Key="BracketHighlighting" Description="Bracket Highlighted Text" DefaultStyle=",True" />
+		<ClassificationType Key="CodeSnippetDependentField" Description="Code Snippet Dependent Field" />
+		<ClassificationType Key="CodeSnippetField" Description="Code Snippet Field" DefaultStyle=",,,#FFBFE4BF" />
+		<ClassificationType Key="CollapsibleText" Description="Collapsible Text" DefaultStyle="#FF808080" />
+		<ClassificationType Key="Comment" DefaultStyle="#FF008000" />
+		<ClassificationType Key="CommentDefault" DefaultStyle="#FF008000" />
+		<ClassificationType Key="CommentDelimiter" DefaultStyle="#FF008000" />
+		<ClassificationType Key="CommentURL" DefaultStyle="#FF008000" />
+		<ClassificationType Key="Keyword" DefaultStyle="#FF0000FF" />
+		<ClassificationType Key="NativeType" DefaultStyle="#FFFF0000" />
+		<ClassificationType Key="Number" DefaultStyle="#FF800080" />
+		<ClassificationType Key="Operator" DefaultStyle="#FF000000" />
+		<ClassificationType Key="PathSpec" DefaultStyle="#FF800000" />
+		<ClassificationType Key="PreProcessorDirectiveDefault" Description="Pre-Processor Directive Default" DefaultStyle="#FF000000" />
+		<ClassificationType Key="PreProcessorDirectiveKeyword" Description="Pre-Processor Directive Keyword" DefaultStyle="#FF0000FF" />
+		<ClassificationType Key="PreprocessorKeyword" Description="PreprocessorKeyword" DefaultStyle="#FF0000FF" />
+		<ClassificationType Key="ReservedWord" DefaultStyle="#FF800000" />
+		<ClassificationType Key="String" DefaultStyle="#FF808080" />
+		<ClassificationType Key="StringDefault" DefaultStyle="#FF808080" />
+		<ClassificationType Key="StringDelimiter" DefaultStyle="#FF808080" />
+		<ClassificationType Key="UserDefinedIdentifier" DefaultStyle="#FF000080,True" />
+	</LanguageDefinition.ClassificationTypes>
+	<!-- Lexer -->
+	<LanguageDefinition.Lexer>
+		<DynamicLexer>
+			<DynamicLexer.Macros>
+				<Macro Key="URL" Pattern="http:// [\w\-]+ (\. [\w\-]+)* (/ [\w\-./?%=]*)?" />
+			</DynamicLexer.Macros>
+			<!-- Default state -->
+			<State Id="1" Key="Default" DefaultCaseSensitivity="Sensitive">
+				<State.ChildStates>
+					<StateRef Key="Character" />
+					<StateRef Key="String" />
+					<StateRef Key="VerbatimString" />
+					<StateRef Key="MultiLineComment" />
+					<StateRef Key="Comment" />
+					<StateRef Key="IncludeDirective" />
+				</State.ChildStates>
+				<RegexPatternGroup TokenId="1" TokenKey="Whitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="2" TokenKey="LineTerminator" Pattern="{LineTerminator}" />
+				<ExplicitPatternGroup Key="OpenParenthesisPatternGroup" TokenId="3" TokenKey="OpenParenthesis" Pattern="(" />
+				<ExplicitPatternGroup Key="CloseParenthesisPatternGroup" TokenId="4" TokenKey="CloseParenthesis" Pattern=")" />
+				<ExplicitPatternGroup Key="OpenCurlyBracePatternGroup" TokenId="5" TokenKey="OpenCurlyBrace" Pattern="{" />
+				<ExplicitPatternGroup Key="CloseCurlyBracePatternGroup" TokenId="6" TokenKey="CloseCurlyBrace" Pattern="}" />
+				<ExplicitPatternGroup Key="OpenSquareBracePatternGroup" TokenId="7" TokenKey="OpenSquareBrace" Pattern="[" />
+				<ExplicitPatternGroup Key="CloseSquareBracePatternGroup" TokenId="8" TokenKey="CloseSquareBrace" Pattern="]" />
+				<ExplicitPatternGroup TokenId="9" TokenKey="Punctuation">
+					<ExplicitPatterns><![CDATA[
+						. , : ;
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="66" TokenKey="NativeType" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Sensitive">
+					<ExplicitPatterns><![CDATA[
+						auto char const double enum extern float int long register short signed static
+						struct typedef union unsigned void volatile _Bool __fp16 restrict
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="13" TokenKey="ReservedWord" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Sensitive">
+					<ExplicitPatterns><![CDATA[
+						break case continue default do else for goto if inline return sizeof switch while __VA_ARGS__
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="67" TokenKey="Function" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}" CaseSensitivity="Sensitive">
+					<ExplicitPatterns><![CDATA[
+						__nop __halt __satadd __satsub __bsh __bsw __hsw __mul32 __mul32u __sch0l __sch0r
+						__sch1l __sch1r __ldsr __ldsr_rh __stsr __stsr_rh __caxi __DI __EI __set_il __set_il_rh
+						__clr1 __set1 __not1 __ldlw __stcw __synce __synci __syncm __syncp __dbcp __dbpush
+						__dbtag __clipb __clipbu __cliph __cliphu
+						__ldlbu __ldlhu __stcb __stch __func__
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="68" TokenKey="Macro" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Sensitive">
+					<ExplicitPatterns><![CDATA[
+						__LINE__ __FILE__ __DATE__ __TIME__ __STDC__ __RENESAS__ __RENESAS_VERSION__
+						__RH850 __RH850__ __CCRH __CCRH__ __v850e3v5 __v850e3v5__ __DBL4 __DOUBLE_IS_32BITS__
+						__DBL8 __DOUBLE_IS_64BITS__ __BITLEFT __BITRIGHT __AUTO_ENUM __FPU __CHAR_SIGNED__
+						__reg32__ __reg22__ __reg_common__ _LIT _RON _ROZ __MULTI_LEVEL__ __STDC_HOSTED__
+						__STDC_VERSION__ __STDC_IEC_559__ __PIC __PIROD __PID
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<RegexPatternGroup TokenId="69" TokenKey="PreProcessorDirective" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Sensitive">
+					<RegexPattern Value="# {Whitespace}* (define | elif | else | endif | if | ifdef | ifndef | include | line | pragma | undef | error)" />
+					<RegexPattern Value="defined" />
+					<RegexPattern Value="_Pragma" />
+				</RegexPatternGroup>
+				<ExplicitPatternGroup TokenId="15" TokenKey="Operator" ClassificationTypeKey="Operator">
+					<ExplicitPatterns><![CDATA[
+						!= == = ! ++ -- += -= *= /= %= -> + - * / % && || &= |= ^= & | ~ ^ <<= >>= << >> <= < >= > ? # ##
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<RegexPatternGroup TokenId="16" TokenKey="RealNumber" LookAheadPattern="{NonWord}|\z">
+					<RegexPattern Value="{Digit}* \. {Digit}+ ([Ee] [\+\-]? {Digit}+)? [FfDdMm]?" />
+					<RegexPattern Value="{Digit}+ [Ee] [\+\-]? {Digit}+ [FfDdMm]" />
+				</RegexPatternGroup>
+				<RegexPatternGroup TokenId="17" TokenKey="IntegerNumber" Pattern="{Digit}+ (([Uu]? [Ll]?) | ([Ll]? [Uu]?))" LookAheadPattern="{NonWord}|\z" />
+				<RegexPatternGroup TokenId="18" TokenKey="HexIntegerNumber" Pattern="0 [xX] {HexDigit}+ (([Uu]? [Ll]?) | ([Ll]? [Uu]?))" LookAheadPattern="{NonWord}|\z" />
+				<RegexPatternGroup TokenId="14" TokenKey="Identifier" Pattern="@? (_ | {Alpha})({Word})*" />
+				<RegexPatternGroup TokenId="70" TokenKey="Identifier2" Pattern="{Digit}+ @? (_ |{Alpha})({Word})*" />
+			</State>
+			<!-- Character state -->
+			<State Id="2" Key="Character" DefaultTokenId="19" DefaultTokenKey="CharacterDefault" DefaultClassificationTypeKey="String">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="20" TokenKey="CharacterStart" ClassificationTypeKey="StringDelimiter" Pattern="'" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup TokenId="21" TokenKey="CharacterEnd" ClassificationTypeKey="StringDelimiter" Pattern="['\n]" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="22" TokenKey="CharacterEscapedCharacter" Pattern="\\." />
+				<RegexPatternGroup TokenId="23" TokenKey="CharacterWhitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="19" TokenKey="CharacterDefault" Pattern="[^'\n]" />
+			</State>
+			<!-- String state -->
+			<State Id="3" Key="String" DefaultTokenId="24" DefaultTokenKey="StringDefault" DefaultClassificationTypeKey="String">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="25" TokenKey="StringStart" ClassificationTypeKey="String" Pattern="&quot;" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup TokenId="26" TokenKey="StringEnd" ClassificationTypeKey="String" Pattern="[\&quot;\n]" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="27" TokenKey="StringEscapedCharacter" Pattern="\\x {HexDigit}{1,4}" />
+				<RegexPatternGroup TokenId="28" TokenKey="StringEscapedCharacter" Pattern="\\u {HexDigit}{4,4}" />
+				<RegexPatternGroup TokenId="27" TokenKey="StringEscapedCharacter" Pattern="\\U {HexDigit}{8,8}" />
+				<RegexPatternGroup TokenId="27" TokenKey="StringEscapedCharacter" Pattern="\\." />
+				<RegexPatternGroup TokenId="71" TokenKey="StringConnect" Pattern="\\ {LineTerminator}" />
+				<RegexPatternGroup TokenId="24" TokenKey="StringDefault" Pattern="[^\&quot;\\\n]+" />
+			</State>
+			<!-- VerbatimString state -->
+			<State Id="4" Key="VerbatimString" DefaultTokenId="29" DefaultTokenKey="VerbatimStringDefault" DefaultClassificationTypeKey="String">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="30" TokenKey="VerbatimStringStart" ClassificationTypeKey="StringDelimiter" Pattern="@&quot;" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<ExplicitPatternGroup TokenId="31" TokenKey="VerbatimStringEnd" ClassificationTypeKey="StringDelimiter" Pattern="&quot;" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<ExplicitPatternGroup TokenId="32" TokenKey="VerbatimStringEscapedQuote" Pattern="&quot;&quot;" />
+				<RegexPatternGroup TokenId="33" TokenKey="VerbatimStringWhitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="34" TokenKey="VerbatimStringWord" Pattern="\w+" />
+				<RegexPatternGroup TokenId="29" TokenKey="VerbatimStringDefault" Pattern="[^\&quot;]" />
+			</State>
+			<!-- Comment state -->
+			<State Id="5" Key="Comment" DefaultTokenId="35" DefaultTokenKey="CommentDefault" DefaultClassificationTypeKey="Comment">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="36" TokenKey="CommentStart" ClassificationTypeKey="Comment" Pattern="//" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup TokenId="37" TokenKey="CommentEnd" ClassificationTypeKey="Comment" Pattern="{LineTerminator}" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="38" TokenKey="CommentDelimiter" ClassificationTypeKey="CommentDelimiter" Pattern="//" />
+				<RegexPatternGroup TokenId="39" TokenKey="CommentWhitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="40" TokenKey="CommentURL" ClassificationTypeKey="CommentURL" Pattern="{URL}" />
+				<RegexPatternGroup TokenId="41" TokenKey="CommentLineTerminator" Pattern="{LineTerminator}" LookAheadPattern="{Whitespace}* // [^/]" />
+				<RegexPatternGroup TokenId="35" TokenKey="CommentDefault" Pattern="{NonLineTerminator}" />
+			</State>
+			<!-- MultiLineComment state -->
+			<State Id="6" Key="MultiLineComment" DefaultTokenId="42" DefaultTokenKey="MultiLineCommentDefault" DefaultClassificationTypeKey="Comment">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="43" TokenKey="MultiLineCommentStart" ClassificationTypeKey="Comment" Pattern="/*" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<ExplicitPatternGroup TokenId="44" TokenKey="MultiLineCommentEnd" ClassificationTypeKey="Comment" Pattern="*/" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="45" TokenKey="MultiLineCommentWhitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="46" TokenKey="MultiLineCommentLineTerminator" Pattern="{LineTerminator}" />
+				<RegexPatternGroup TokenId="47" TokenKey="MultiLineCommentURL" ClassificationTypeKey="CommentURL" Pattern="{URL}" />
+				<RegexPatternGroup TokenId="42" TokenKey="MultiLineCommentDefault" Pattern="[^*]" />
+			</State>
+			<!-- PreProcessorDirectiveComment state -->
+			<State Id="8" Key="PreProcessorDirectiveComment" DefaultTokenId="35" DefaultTokenKey="CommentDefault" DefaultClassificationTypeKey="Comment">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="36" TokenKey="CommentStart" ClassificationTypeKey="CommentDelimiter" Pattern="//" />
+						</Scope.StartPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="39" TokenKey="CommentWhitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="65" TokenKey="CommentWord" Pattern="\w+" />
+				<RegexPatternGroup TokenId="35" TokenKey="CommentDefault" Pattern="{NonLineTerminator}+" />
+			</State>
+			<!-- IncludeDirective state -->
+			<State Id="9" Key="IncludeDirective">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<RegexPatternGroup TokenId="72" TokenKey="IncludePreprocessorDirective" ClassificationTypeKey="ReservedWord" Pattern="# {Whitespace}* include" LookAheadPattern="{NonWord}|\z" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup TokenId="73" TokenKey="PreprocessorDirectiveEndDelimiter" Pattern="{LineTerminator}" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<State.ChildStates>
+					<StateRef Key="String" />
+					<StateRef Key="PathSpec" />
+					<StateRef Key="PreProcessorDirectiveComment" />
+					<StateRef Key="MultiLineComment" />
+				</State.ChildStates>
+			</State>
+			<!-- PathSpec state -->
+			<State Id="10" Key="PathSpec" DefaultTokenId="74" DefaultTokenKey="PathSpecText">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="75" TokenKey="PathSpecStartDelimiter" ClassificationTypeKey="String" Pattern="&lt;" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup TokenId="76" TokenKey="PathSpecEndDelimiter" ClassificationTypeKey="String" Pattern="[&gt;\n]" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="74" TokenKey="PathSpecText" ClassificationTypeKey="String" Pattern="[^&gt;\\\n]+" />
+			</State>
+		</DynamicLexer>
+	</LanguageDefinition.Lexer>
+	<!-- Example text -->
+	<LanguageDefinition.ExampleText><![CDATA[0>>
+  /*  強調表示確認用ファイル  */
+
+//// C言語 CA850 CA78K0x CX(V850)共通\
+<<0
+コメント続き
+1>>
+auto,	char , const	//行途中のテスト
+auto
+char
+const
+double
+enum
+extern
+float
+int
+long
+register
+short
+signed
+static
+struct
+typedef
+union
+unsigned
+void
+volatile
+<<1
+
+2>>
+break
+case
+continue
+default
+do
+else
+for
+goto
+if
+inline
+return
+sizeof
+switch
+while
+<<2
+
+3>>
+#define
+#elif
+#else
+#endif
+#if
+#ifdef
+#ifndef
+#include
+#line
+#pragma
+#undef
+<<3
+4>>
+# define
+# elif
+# else
+# endif
+# if
+# ifdef
+# ifndef
+# include
+# line
+# pragma
+# undef
+<<4
+5>>
+#	define
+#	elif
+#	else
+#	endif
+#	if
+#	ifdef
+#	ifndef
+#	include
+#	line
+#	pragma
+#	undef
+<<5
+6>>
+ #define
+ #elif
+ #else
+ #endif
+ #if
+ #ifdef
+ #ifndef
+ #include
+ #line
+ #pragma
+ #undef
+<<6
+7>>
+	#define
+	#elif
+	#else
+	#endif
+	#if
+	#ifdef
+	#ifndef
+	#include
+	#line
+	#pragma
+	#undef
+<<7
+
+// C言語 CA850 CA78K0x CX(V850)共通  文字列定数
+8>>
+    "ABC"
+    "ABC P1"
+    "ABC" , "ABC P1" //行途中のテスト
+<<8
+
+
+//  RH850 専用
+12>>
+_Bool
+_Pragma
+__LINE__, __FILE__, __FILE__ //Function and Macro
+__LINE__
+__FILE__
+__DATE__
+__FILE__
+__STDC__
+__RENESAS__
+__RENESAS_VERSION__
+__RH850
+__RH850__
+__CCRH
+__CCRH__
+__v850e3v5
+__v850e3v5__
+__DBL4
+__DBL8
+__DOUBLE_IS_64BITS__
+__BITLEFT
+__BITRIGHT
+__AUTO_ENUM
+__FPU
+__CHAR_SIGNED__
+__reg32__
+__reg22__
+__reg_common__
+_LIT
+_FLT
+__FLT__
+_FPS
+_FPD
+_RON
+__nop()
+__halt( )
+__satadd( )
+__satsub( )
+__bsh( )
+__bsw( )
+__hsw(        )
+__mul32( )
+__mul32u( )
+__sch0l( )
+__sch0r( )
+__sch1l( )
+__sch1r( )
+__ldsr()
+__ldsr_rh( )
+__stsr( )
+__stsr_rh( )
+__caxi( )
+__DI( )
+__EI( )
+__set_il( )
+__set_il_rh( )
+__clr1( )
+__set1( )
+__not1( )
+__ldlw( )
+__stcw( )
+__synce( )
+__synci( )
+__syncm( )
+__syncp( )
+
+// New
+
+#error
+
+__dbcp()
+__dbpush()
+__dbtag()]]></LanguageDefinition.ExampleText>
+</LanguageDefinition>

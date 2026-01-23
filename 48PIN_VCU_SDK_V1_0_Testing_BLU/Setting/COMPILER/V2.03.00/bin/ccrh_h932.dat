@@ -1,0 +1,111 @@
+This is ccrh.exe Japanese help message.
+Copyright (C) 2011-2020 Renesas Electronics Corporation
+All rights reserved.
+
+------------------------------------------------------------------------------
+-V                     バージョン表示
+-h                     オプションの説明の表示
+-ofile                 出力ファイル名の指定
+-Xobj_path[=path]      コンパイル途中に生成される
+                       オブジェクト・モジュール・ファイルの保存先指定
+-Xasm_path[=path]      コンパイル途中に生成される
+                       アセンブラ・ソース・ファイルの保存先指定
+-Xprep_path[=path]     前処理済みファイルの保存先指定
+-g                     ソース・デバッグ用情報の出力
+-g_line                最適化時デバッグ情報の強化
+-Xcommon=series        マイクロコントローラ共通オブジェクト生成の指定
+-Xcpu=core             cpu コアの指定
+-P                     前処理のみ実行
+-S                     アセンブラの前まで実行
+-c                     リンカの前まで実行
+-Dname[=def][,name[=def]]...
+                       プリプロセッサ・マクロ／アセンブラ・シンボルの定義
+-Uname[,name]...       -Dオプションの無効化
+-Ipath[,path]...       インクルード・ファイルを検索するフォルダの指定
+-Xpreinclude=file,[file]...
+                       プレインクルードファイルの指定
+-Xpreprocess=string[,string]
+                       プリプロセス結果の制御
+-lang=string           言語規格の指定
+-strict_std            厳密C言語規格指定
+-Xenum_type=string     enumの型の指定
+-Xvolatile             外部変数のvolatile 化の指定
+-Xdbl_size             浮動小数点型の演算精度の指定
+-Xcheck=comp           C プログラムの互換性をチェック
+-Xmisra2004=string     MISRA-C:2004 ルールによるソースチェック
+-Xmisra2012=string     MISRA-C:2012 ルールによるソースチェック
+-Xignore_files_misra=file[,file]... 
+                       MISRA-Cチェック対象外のファイルを指定
+-Xcheck_language_extension 
+                       言語拡張により部分抑止されたMISRA-Cルールの有効化
+-misra_intermodule=file
+                       複数ファイルにまたがるMISRA-C:2012ルールによる
+                       ソースチェック情報の出力先指定
+-Xuse_fp16[={on|off}]  半精度型使用の指定
+-Xcharacter_set=code   日本語の文字コードの指定
+-Olevel                最適化レベルの指定
+-Oitem[=value][,item[=value]]...
+                       最適化項目の詳細指定
+-Xintermodule          大域最適化
+-Xinline_strcpy        strcpy, strcmp, memcpy, memset関数のインライン展開の
+                       指定
+-Xmerge_string         文字列定数のマージ
+-Xalias=level          ポインタ指示先型を考慮した最適化の指定
+-Xmerge_files          複数ファイルを1 つにマージしてコンパイル
+-Xwhole_program        入力ファイルがプログラム全体であることを仮定して
+                       最適化を実施
+-library={ function    標準ライブラリ関数のインライン展開抑止
+         | intrinsic } 標準ライブラリ関数のインライン展開指定
+-goptimize             リンク時最適化用情報の生成
+-Xpack=num             構造体のパッキング
+-Xbit_order=pos        ビットフィールドメンバの並び順指定
+-Xpass_source          アセンブラ・ソース・ファイルのコメント中へのCソース出力
+-Xswitch=type          switch文の出力形式の指定
+-Xreg_mode=mode        レジスタ・モードの指定
+-Xreserve_r2           r2 レジスタの予約の指定
+-r4=mode               r4 レジスタの扱いの指定
+-Xep=mode              ep レジスタの扱い方を指定
+-Xfloat=type           浮動小数点演算命令生成の制御
+-Xfxu={on|off}         FXU命令使用の制御
+-Xcall_jump=num        関数呼び出し命令の指定
+-Xfar_jump=file[,file]...
+                       far jump出力制御(Cソース・ファイル)
+-Xdiv                  div／divu命令生成の指定
+-Xcheck_div_ov         除算時のOVフラグチェックの指定
+-relaxed_math          厳密でない浮動小数点演算の指定
+-Xuse_fmaf             積和演算命令生成の指定
+-use_recipf            recipf命令生成の指定
+-approximate           近似演算コード生成の指定
+-Xunordered_cmpf       浮動小数点比較で無効演算例外の検出を指定
+-Xmulti_level=level    マルチコア用プログラムの生成指定
+-Xpatch=string         CPU不具合を回避するパッチの適用
+-Xround=mode           浮動小数点定数の丸めモードの指定
+-Xalign4[=mode]        分岐先アドレスのアライメントの指定
+-Xstack_protector      スタック破壊検出コード生成の指定
+-Xstack_protector_all  スタック破壊検出コード生成の指定
+-Xsection=string=value データのデフォルトセクションを指定
+-stuff[=type][,type]...
+                       変数をアライメントに応じたセクションに配置
+-Xcheck_exclusion_control=file
+                       排他制御チェックの有効化
+-Xresbank_mode=num     resbank命令の動作モード指定
+-insert_dbtag_with_label=file,line,label,tagid
+                       指定した位置にローカル・ラベルと DBTAG 命令を挿入
+-store_reg[=item]      制御レジスタへの書き込み処理の検出、および同期化処理挿入
+-control_flow_integrity
+                       不正な間接関数呼び出しを検出するコードの生成
+-pic                   PICコードの生成
+-pirod                 PIRODコードの生成
+-pid                   PIDコードの生成
+-Xcref=path            静的解析情報の出力
+-Xerror_file=file      エラー・メッセージ・ファイルの出力
+-Xno_warning={num|num1-num2}[,{num|num1-num2}]...
+                       警告メッセージの個別抑止指定
+-change_message=error[={num|num1-num2}[,{num|num1-num2}]...]
+                       コンパイラ出力メッセージのレベル変更
+-Xasm_option=arg1[,arg2]...
+                       アセンブラ・オプションの指定
+-Xlk_option=arg1[,arg2]...
+                       リンカ・オプションの指定
+------------------------------------------------------------------------------
+@file                  コマンド・ファイルの指定

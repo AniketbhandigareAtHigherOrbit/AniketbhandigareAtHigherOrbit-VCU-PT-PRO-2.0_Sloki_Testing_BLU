@@ -1,0 +1,117 @@
+This is ccrh.exe help message.
+Copyright (C) 2011-2020 Renesas Electronics Corporation
+All rights reserved.
+
+------------------------------------------------------------------------------
+-V                     Print version and copyright.
+-h                     Print help message.
+-ofile                 Specify output file name.
+-Xobj_path[=path]      Output object files.
+-Xasm_path[=path]      Output assembly files.
+-Xprep_path[=path]     Output preprocessed files.
+-g                     Generate debugging information.
+-g_line                Enhance debugging information for optimization.
+-Xcommon=series        Output "common" object files.
+-Xcpu=core             Specify cpu core.
+-P                     Execute preprocessing only.
+-S                     Output assembly files and quit.
+-c                     Output object files and quit.
+-Dname[=def][,name[=def]]...
+                       Define preprocessor or assembler symbol 'name'.
+-Uname[,name]...       Invalidate definition of symbol 'name' previously
+                       defined with -D.
+-Ipath[,path]...       Add extra folder to include file search path.
+-Xpreinclude=file,[file]...
+                       Specify pre-include file.
+-Xpreprocess=string[,string]
+                       Control output of preprocessor.
+-lang=string           Specify source language.
+-strict_std            Enable strict C mode.
+-Xenum_type=string     Change underlying type of enum.
+-Xvolatile             Treat external variables as volatile.
+-Xdbl_size             Specify precision of double type and long double type.
+-Xcheck=comp           Check C program compatibility.
+-Xmisra2004=string     Check C program based on MISRA-C:2004.
+-Xmisra2012=string     Check C program based on MISRA-C:2012.
+-Xignore_files_misra=file[,file]... 
+                       Specify files without MISRA-C check.
+-Xcheck_language_extension
+                       Validate MISRA-C rules restrained partially by
+                       the language extension.
+-misra_intermodule=file
+                       Specify the information file for the MISRA-C:2012 check
+                       across multiple C source files.
+-Xuse_fp16[={on|off}]  Specify using half precision floating point type.
+-Xcharacter_set=code   Specify encoding of multi-byte character sequence.
+-Olevel                Specify optimization level.
+-Oitem[=value][,item[=value]]...
+                       Enable/disable each optimization item.
+-Xintermodule          Do inter-module optimization.
+-Xinline_strcpy        Do inline expansion of strcpy, strcmp, memcpy, memset.
+-Xmerge_string         Merge string literals.
+-Xalias=level          Specify optimization considering type of object
+                       indicated by pointer.
+-Xmerge_files          Merge C source files.
+-Xwhole_program        Assume it the whole program and do optimization.
+-library={ function    Specify no inline expansion of standard library.
+         | intrinsic } Specify inline expansion of standard library.
+-goptimize             Generate link-time optimization information.
+-Xpack=num             Control alignment for structs.
+-Xbit_order=pos        Specify order of bit-field member.
+-Xpass_source          Embed C source line into assembly file as comment.
+-Xswitch=type          Choose instructions for switch statement.
+-Xreg_mode=mode        Specify register-mode.
+-Xreserve_r2           Reserve r2 register.
+-r4=mode               Specify r4 register treatment.
+-Xep=mode              Specify ep-register treatment.
+-Xfloat=type           Choose instructions for floating-point (FPU) instruction
+                       or emulation routine.
+-Xfxu={on|off}         Choose to use FXU instructions.
+-Xcall_jump=num        Specify jump instruction.
+-Xfar_jump=file[,file]...
+                       Generate "far jump" instructions.
+-Xdiv                  Generate div/divu instead of divq/divqu.
+-Xcheck_div_ov         Check OV flag after div instruction.
+-relaxed_math          Specify relaxed floating point operation.
+-Xuse_fmaf             Generate floating-point multiply-add instruction.
+-use_recipf            Specify recipf instruction generation.
+-approximate           Generate approximate calculation code.
+-Xunordered_cmpf       Check invalid exception in cmpf instruction.
+-Xmulti_level=level    Generate program for multi-core.
+-Xpatch=string         Apply patch for avoiding CPU restriction.
+-Xround=mode           Specify round mode for floating-point constant.
+-Xalign4[=mode]        Specify alignment of branch destination address.
+-Xstack_protector[=num]
+                       Generate code for stack-smashing protection.
+-Xstack_protector_all[=num]
+                       Generate code for stack-smashing protection.
+-Xsection=string=value Specify default section of data.
+-stuff[=type][,type]...
+                       Allocates variables to sections matching the alignment
+                       of the variables.
+-Xcheck_exclusion_control=file
+                       Enable exclusion control check.
+-Xresbank_mode=num     Choose operating mode of resbank instruction.
+-insert_dbtag_with_label=file,line,label,tagid
+                       Insert a labeled DBTAG at the specified source
+                       program location.
+-store_reg[=item]      Detect writing to register and insert synchronization
+                       processing.
+-control_flow_integrity
+                       Generate code for the detection of illegal indirect
+                       function call.
+-pic                   Generate PIC code.
+-pirod                 Generate PIROD code.
+-pid                   Generate PID code.
+-Xcref=path            Output static analysis information file.
+-Xerror_file=file      Output error messages to both stderr and file 'file'.
+-Xno_warning={num|num1-num2}[,{num|num1-num2}]...
+                       Disable warning with number 'num'.
+-change_message=error[={num|num1-num2}[,{num|num1-num2}]...]
+                       Change the level of the compiler output message.
+-Xasm_option=arg1[,arg2]...
+                       Pass option to assembler.
+-Xlk_option=arg1[,arg2]...
+                       Pass option to linker.
+------------------------------------------------------------------------------
+@file                  Read command-file 'file'.

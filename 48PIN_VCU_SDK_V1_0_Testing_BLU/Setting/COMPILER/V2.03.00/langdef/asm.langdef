@@ -1,0 +1,931 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Actipro Syntax Language Definition (.langdef)
+  For use with Actipro SyntaxEditor and related products.
+  http://www.actiprosoftware.com
+
+'Assembly for CC-RH' language V2.01.00.01 [25 Sep 2018]
+  Copyright (C) 2011, 2018 Renesas Electronics Corporation
+
+-->
+<LanguageDefinition LanguageKey="Assembly" LanguageDescription="Assembly for CC-RH" Creator="Renesas Electronics Corporation" Copyright="Copyright (C) 2011, 2018 Renesas Electronics Corporation" xmlns="http://schemas.actiprosoftware.com/langdef/1.0">
+	<!-- Classification types -->
+	<LanguageDefinition.ClassificationTypes>
+		<ClassificationType Key="BracketHighlighting" Description="Bracket Highlighted Text" DefaultStyle=",True" />
+		<ClassificationType Key="CodeSnippetDependentField" Description="Code Snippet Dependent Field" />
+		<ClassificationType Key="CodeSnippetField" Description="Code Snippet Field" DefaultStyle=",,,#FFBFE4BF" />
+		<ClassificationType Key="CollapsibleText" Description="Collapsible Text" DefaultStyle="#FF808080" />
+		<ClassificationType Key="Comment" DefaultStyle="#FF008000" />
+		<ClassificationType Key="CommentDefault" DefaultStyle="#FF008000" />
+		<ClassificationType Key="CommentDelimiter" DefaultStyle="#FF008000" />
+		<ClassificationType Key="CommentURL" DefaultStyle="#FF008000" />
+		<ClassificationType Key="Default" />
+		<ClassificationType Key="FpuInstruction" DefaultStyle="#FF0000FF" />
+		<ClassificationType Key="Instruction" DefaultStyle="#FF0000FF" />
+		<ClassificationType Key="Keyword" DefaultStyle="#FF800000" />
+		<ClassificationType Key="Label" DefaultStyle="#FF008080" />
+		<ClassificationType Key="NativeType" DefaultStyle="#FFFF0000" />
+		<ClassificationType Key="Number" />
+		<ClassificationType Key="Operator" DefaultStyle="#FF0000FF" />
+		<ClassificationType Key="PreProcessorDirectiveDefault" Description="Pre-Processor Directive Default" DefaultStyle="#FF000000" />
+		<ClassificationType Key="PreProcessorDirectiveKeyword" Description="Pre-Processor Directive Keyword" DefaultStyle="#FF0000FF" />
+		<ClassificationType Key="Register" DefaultStyle="#FFF60F0F" />
+		<ClassificationType Key="ReservedWord" DefaultStyle="#FF800000" />
+		<ClassificationType Key="SectionInstruction" DefaultStyle="#FF0000FF" />
+		<ClassificationType Key="String" DefaultStyle="#FF808080" />
+		<ClassificationType Key="StringDelimiter" DefaultStyle="#FF800000" />
+		<ClassificationType Key="UserDefinedIdentifier" DefaultStyle="#FF000080,True" />
+	</LanguageDefinition.ClassificationTypes>
+	<!-- Lexer -->
+	<LanguageDefinition.Lexer>
+		<DynamicLexer>
+			<DynamicLexer.Macros>
+				<Macro Key="URL" Pattern="https?:// [\w\-]+ (\. [\w\-]+)* (/ [\w\-./?%=]*)?" />
+			</DynamicLexer.Macros>
+			<!-- Default state -->
+			<State Id="1" Key="Default">
+				<State.ChildStates>
+					<StateRef Key="Character" />
+					<StateRef Key="String" />
+					<StateRef Key="Comment" />
+				</State.ChildStates>
+				<RegexPatternGroup TokenId="1" TokenKey="Whitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="2" TokenKey="LineTerminator" Pattern="{LineTerminator}" />
+				<ExplicitPatternGroup TokenId="12" TokenKey="Operator" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						NOT HIGH LOW HIGHW LOWW HIGHW1 STARTOF SIZEOF
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="33" TokenKey="RegisterKey" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						r0 zero r1 r2 hp r3 sp r4 gp r5 tp r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18
+						r19 r20 r21 r22 r23 r24 r25 r26 r27 r28 r29 r30 ep r31 lp
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="34" TokenKey="FpuInstruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						absf.d absf.s addf.d addf.s divf.d divf.s maxf.d maxf.s minf.d minf.s mulf.d mulf.s
+						negf.d negf.s recipf.d recipf.s rsqrtf.d rsqrtf.s sqrtf.d sqrtf.s subf.d subf.s
+						ceilf.dl ceilf.dw ceilf.dul ceilf.duw ceilf.sl ceilf.sw ceilf.sul ceilf.suw cvtf.dl
+						cvtf.ds cvtf.dul cvtf.duw cvtf.dw cvtf.ld cvtf.ls cvtf.sd cvtf.sl cvtf.sul cvtf.suw
+						cvtf.sw cvtf.uld cvtf.uls cvtf.uwd cvtf.uws cvtf.wd cvtf.ws floorf.dl floorf.dw
+						floorf.dul floorf.duw floorf.sl floorf.sw floorf.sul floorf.suw trncf.dl trncf.dw
+						trncf.dul trncf.duw trncf.sl trncf.sw trncf.sul trncf.suw cmpf.d cmpf.s cmpff.d cmpfun.d
+						cmpfeq.d cmpfueq.d cmpfolt.d cmpfult.d cmpfole.d cmpfule.d cmpfsf.d cmpfngle.d cmpfseq.d
+						cmpfngl.d cmpflt.d cmpfnge.d cmpfle.d cmpfngt.d cmpff.s cmpfun.s cmpfeq.s cmpfueq.s
+						cmpfolt.s cmpfult.s cmpfole.s cmpfule.s cmpfsf.s cmpfngle.s cmpfseq.s cmpfngl.s
+						cmpflt.s cmpfnge.s cmpfle.s cmpfngt.s cmovf.d cmovf.s trfsr cvtf.hs cvtf.sh fmaf.s
+						fmsf.s fnmaf.s fnmsf.s
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="35" TokenKey="Virtual_Instruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						HVCALL HVTRAP LDVC.SR STVC.SR
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="36" TokenKey="Hardware_Instruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						DST EST LDTC.GR LDTC.PC LDTC.SR LDTC.VR STTC.GR STTC.PC STTC.SR STTC.VR
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="37" TokenKey="Cache_Instruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						CACHE PREF
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="38" TokenKey="MMU_Instruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						TLBAI TLBR TLBS TLBVI TLBW
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="39" TokenKey="SIMD_Instruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						VAND VOR VXOR VNOT VSAR.H VSAR.W VSAR.DW VSHR.H VSHR.W VSHR.DW VSHL.H VSHL.W VSHL.DW
+						VCONCAT.B VITLV.H VITLV.W VITLVHW.H VITLVWH.H VSHUFL.B VBSWAP.DW VBSWAP.H VBSWAP.W
+						DUP.H DUP.W MOV.H MOV.W MOV.DW VLD.B VLD.H VLD.W VLD.DW VST.B VST.H VST.W VST.DW
+						VCMOV MODADD
+						VADD.H VADD.W VADD.DW VSUB.H VSUB.W VSUB.DW VADDSAT.H VADDSAT.W VSUBSAT.H VSUBSAT.W
+						VADDS.H VADDS.W VSUBS.H VSUBS.W VMUL.H VMUL.W VMULT.H VMULT.W VMULCX.H VMULCX.W
+						VCMPEQ.H VCMPEQ.W VCMPLT.H VCMPLT.W VCMPLE.H VCMPLE.W VCMPNE.H VCMPNE.W VABS.H VABS.W
+						VNEG.H VNEG.W VMAXGT.H VMAXGE.H VMINLT.H VMINLE.H VMAXGT.W VMAXGE.W VMINLT.W VMINLE.W
+						VMADSAT.H VMADSAT.W VMADRN.H VMADRN.W VMSUM.H VMSUM.W VMSUMAD.H VMSUMAD.W VMSUMADRE.H
+						VMSUMADRE.W VMSUMADIM.H VMSUMADIM.W VMSUMADRN.H VBIQ.H PKUI8I16 PKI16I32 PKQ15Q31
+						PKI16UI8 PKI32I16 PKQ31Q15 PKQ30Q31 PKI64I32 CNVQ15Q30 CNVQ31Q62 CNVQ30Q15 CNVQ62Q31
+						EXPQ31 VCALC.H VCALC.W
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="40" TokenKey="SectionInstruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						.CSEG .DSEG .ORG .VSEG .SECTION TEXT CONST BSS DATA SBSS SDATA SDATA23 SBSS23 SDATA32
+						SBSS32 TDATA TDATA4 TBSS4 TDATA5 TBSS5 TDATA7 TBSS7 TDATA8 TBSS8 EDATA EBSS EDATA23
+						EBSS23 ZDATA ZBSS ZCONST ZDATA23 ZBSS23 ZCONST23
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="41" TokenKey="Debug_Instruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						DBCP DBHVTRAP DBPUSH DBRET DBTAG DBTRAP RMTRAP
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="42" TokenKey="Pseudo_Instruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						.SET .FILE .DB .DB2 .DB4 .DB8 .DHW .DW .DDW .FLOAT .DOUBLE .DS .DSHW .ALIGN .PUBLIC
+						.EXTERN .MACRO .LOCAL .REPT .IRP .EXITM .EXITMA .ENDM .STACK ._LINE_TOP ._LINE_END
+						.OFFSET .EQU .LINE
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="43" TokenKey="InstructionKey" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						ld.b ld.h ld.w ld.bu ld.hu sld.b sld.h sld.w sld.bu sld.hu sst.b sst.h sst.w st.b
+						st.h st.w add addi cmov cmovgt cmovge cmovlt cmovle cmovh cmovnl cmovl cmovnh cmove
+						cmovne cmovv cmovnv cmovn cmovp cmovc cmovnc cmovz cmovnz cmovt cmovsa cmp div divh
+						divhu divu mov mov32 movea movhi mul mulh mulhi mulu sasf sasfgt sasfge sasflt sasfle
+						sasfh sasfnl sasfl sasfnh sasfe sasfne sasfv sasfnv sasfn sasfp sasfc sasfnc sasfz
+						sasfnz sasft sasfsa setf setfgt setfge setflt setfle setfh setfnl setfl setfnh setfe
+						setfne setfv setfnv setfn setfp setfc setfnc setfz setfnz setft setfsa sub subr satadd
+						satsub satsubi satsubr and andi bsh bsw hsw not or ori sar shl shr sxb sxh tst xor
+						xori zxb zxh jarl jgt jge jlt jle jh jnl jl jnh je jne jv jnv jn jp jc jnc jz jnz jbr
+						jsa jmp jr clr1 not1 set1 tst1 pop popm push pushm callt ctret di ei dispose prepare
+						halt nop ldsr stsr cll switch trap caxi eiret feret fetrap rie syncm syncp jarl22
+						jarl32 jmp32 jr22 jr32 bins ld23.dw ldl.w loop popsp pushsp rotl snooze st23.dw stc.w
+						synci bgt bge blt ble bh bnl bl bnh be bne bv bnv bn bp bc bnc bz bnz br bsa
+						jgt17 jge17 jlt17 jle17 jh17 jnl17 jl17 jnh17 je17 jne17 jv17 jnv17 jn17 jp17 jc17
+						jnc17 jz17 jnz17 jbr17 jsa17 jgt9 jge9 jlt9 jle9 jh9 jnl9 jl9 jnh9 je9 jne9 jv9 jnv9
+						jn9 jp9 jc9 jnc9 jz9 jnz9 jbr9 jsa9 bgt17 bge17 blt17 ble17 bh17 bnl17 bl17 bnh17
+						be17 bne17 bv17 bnv17 bn17 bp17 bc17 bnc17 bz17 bnz17 br17 bsa17 bgt9 bge9 blt9 ble9
+						bh9 bnl9 bl9 bnh9 be9 bne9 bv9 bnv9 bn9 bp9 bc9 bnc9 bz9 bnz9 br9 bsa9 ld23.b ld23.h
+						ld23.w ld23.bu ld23.hu st23.b st23.h st23.w synce popmh popml pushmh pushml mac macu
+						adf adfgt adfge adflt adfle adfh adfnl adfl adfnh adfe adfne adfv adfnv adfn adfp
+						adfc adfnc adfz adfnz adft sbf sbfgt sbfge sbflt sbfle sbfh sbfnl sbfl sbfnh sbfe
+						sbfne sbfv sbfnv sbfn sbfp sbfc sbfnc sbfz sbfnz sbft divq divqu hsh sch0l sch0r sch1l
+						sch1r syscall clip.b clip.bu clip.h clip.hu ldl.bu ldl.hu resbank stc.b stc.h
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="44" TokenKey="PreDirective" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						$PROCESSOR $INCLUDE $BINCLUDE $IFDEF $IFNDEF $IF
+						$REG_MODE $NO_MACRO $MACRO $SDATA $DATA $NOWARNING $WARNING $IFN $ELSEIF $ELSEIFN
+						$ELSE $ENDIF
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="48" TokenKey="Macro" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Sensitive">
+					<ExplicitPatterns><![CDATA[
+						__RENESAS__ __ASRH__ __ASRH __RH850__ __RH850 __PIC __PIROD __PID
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="49" TokenKey="FXU_VectorRegister" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						wr0 wr1 wr2 wr3 wr4 wr5 wr6 wr7 wr8 wr9 wr10 wr11 wr12 wr13 wr14 wr15 wr16 wr17 wr18
+						wr19 wr20 wr21 wr22 wr23 wr24 wr25 wr26 wr27 wr28 wr29 wr30 wr31
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<ExplicitPatternGroup TokenId="50" TokenKey="FXU_Instruction" ClassificationTypeKey="ReservedWord" LookAheadPattern="{NonWord}|\z" CaseSensitivity="Insensitive">
+					<ExplicitPatterns><![CDATA[
+						movv.w4 flpv.s4 shflv.w4 ldv.dw ldv.qw ldv.w ldvz.h4 stv.dw stv.qw stv.w stvz.h4
+						cmovf.w4 trfsrv.w4 absf.s4 addf.s4 divf.s4 maxf.s4 minf.s4 mulf.s4 negf.s4 recipf.s4
+						rsqrtf.s4 sqrtf.s4 subf.s4 fmaf.s4 fmsf.s4 fnmaf.s4 fnmsf.s4 addsubf.s4 addsubnf.s4
+						subaddf.s4 subaddnf.s4 addxf.s4 mulxf.s4 subxf.s4 addsubnxf.s4 addsubxf.s4 subaddnxf.s4
+						subaddxf.s4 addrf.s4 maxrf.s4 minrf.s4 mulrf.s4 subrf.s4 ceilf.suw4 ceilf.sw4 cvtf.hs4
+						cvtf.sh4 cvtf.suw4 cvtf.sw4 cvtf.uws4 cvtf.ws4 floorf.suw4 floorf.sw4 roundf.suw4
+						roundf.sw4 trncf.suw4 trncf.sw4 cmpf.s4 stm.gsr stm.mp ldm.gsr ldm.mp
+					]]></ExplicitPatterns>
+				</ExplicitPatternGroup>
+				<RegexPatternGroup TokenId="45" TokenKey="Label" Pattern="([\._@\$\?] | {Alpha})([@\$\?] | {Word})* \:" CaseSensitivity="Insensitive" />
+				<RegexPatternGroup TokenId="11" TokenKey="Identifier">
+					<RegexPattern Value="([\._@\$\?] | {AlphaMacro})([@\$\?\.] | {WordMacro})*" />
+					<RegexPattern Value="{Digit}+([@\$\?\.] | {WordMacro})*" />
+				</RegexPatternGroup>
+				<RegexPatternGroup TokenId="13" TokenKey="Number" ClassificationTypeKey="Number" LookAheadPattern="{NonWord}|\z">
+					<RegexPattern Value="0 [Xx] {HexDigitMacro}+" />
+					<RegexPattern Value="0 [0-7]*" />
+					<RegexPattern Value="0 [Bb] [0-1]+" />
+					<RegexPattern Value="[1-9][0-9]*" />
+				</RegexPatternGroup>
+			</State>
+			<!-- Character state -->
+			<State Id="2" Key="Character" DefaultTokenId="16" DefaultTokenKey="CharacterDefault" DefaultClassificationTypeKey="Default">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="17" TokenKey="CharacterStart" Pattern="'" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup TokenId="18" TokenKey="CharacterEnd" Pattern="['\n]" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="19" TokenKey="CharacterEscapedCharacter" Pattern="\\." />
+				<RegexPatternGroup TokenId="20" TokenKey="CharacterWhitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="16" TokenKey="CharacterDefault" Pattern="[^'\n]" />
+			</State>
+			<!-- String state -->
+			<State Id="3" Key="String" DefaultTokenId="21" DefaultTokenKey="StringDefault" DefaultClassificationTypeKey="String">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup TokenId="22" TokenKey="StringStart" Pattern="&quot;" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup TokenId="23" TokenKey="StringEnd" Pattern="[\&quot;\n]" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="24" TokenKey="StringEscapedCharacter" Pattern="\\." />
+				<RegexPatternGroup TokenId="25" TokenKey="StringWhitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="21" TokenKey="StringDefault" Pattern="[^\&quot;\n]" />
+			</State>
+			<!-- Comment state -->
+			<State Id="5" Key="Comment" DefaultTokenId="32" DefaultTokenKey="SingleLineCommentText" DefaultClassificationTypeKey="Comment">
+				<State.Scopes>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<ExplicitPatternGroup Pattern=";" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup Pattern="\n" />
+						</Scope.EndPatternGroup>
+					</Scope>
+					<Scope>
+						<Scope.StartPatternGroup>
+							<RegexPatternGroup Pattern="^ {Whitespace}* #" />
+						</Scope.StartPatternGroup>
+						<Scope.EndPatternGroup>
+							<RegexPatternGroup Pattern="\n" />
+						</Scope.EndPatternGroup>
+					</Scope>
+				</State.Scopes>
+				<RegexPatternGroup TokenId="32" TokenKey="CommentWhitespace" Pattern="{Whitespace}+" />
+				<RegexPatternGroup TokenId="46" TokenKey="CommentWord" Pattern="\w+" />
+				<RegexPatternGroup TokenId="47" TokenKey="CommentDefault" Pattern="{NonLineTerminator}+" />
+			</State>
+		</DynamicLexer>
+	</LanguageDefinition.Lexer>
+	<!-- Example text -->
+	<LanguageDefinition.ExampleText><![CDATA[
+// CX V850 ê—p  2009/12/03 update
+1>>
+# ƒRƒƒ“ƒgs
+
+ZERO  ; ƒRƒƒ“ƒg(s––‚Ü‚Å)
+<<1
+
+/// ‘å•¶Žš 
+2>>
+R0,	ZERO , 	R1, R2	//s“r’†‚ÌƒeƒXƒg
+r0
+zero
+r1
+r2
+hp
+r3
+sp
+r4
+gp
+r5
+r6
+r7
+r8
+r9
+r10
+r11
+r12
+r13
+r14
+r15
+r16
+r17
+r18
+r19
+r20
+r21
+r22
+r23
+r24
+r25
+r26
+r27
+r28
+r29
+r30
+ep
+r31
+lp
+NOT
+HIGH
+LOW
+HIGHW
+LOWW
+HIGHW1
+STARTOF
+SIZEOF
+ld.b
+ld.h
+ld.w
+ld.bu
+ld.hu
+sld.b
+sld.h
+sld.w
+sld.bu
+sld.hu
+sst.b
+sst.h
+sst.w
+st.b
+st.h
+st.w
+add
+addi
+cmov
+cmovgt
+cmovge
+cmovlt
+cmovle
+cmovh
+cmovnl
+cmovl
+cmovnh
+cmove
+cmovne
+cmovv
+cmovnv
+cmovn
+cmovp
+cmovc
+cmovnc
+cmovz
+cmovnz
+cmovt
+cmovsa
+cmp
+syncp
+div
+divh
+divhu
+divu
+mov
+mov32
+movea
+movhi
+mul
+mulh
+mulhi
+mulu
+sasf
+setf
+sub
+subr
+satadd
+satsub
+satsubi
+satsubr
+and
+andi
+bsh
+bsw
+hsw
+not
+or
+ori
+sar
+shl
+shr
+sxb
+sxh
+tst
+xor
+xori
+zxb
+zxh
+jarl
+jgt
+jge
+jlt
+jle
+jh
+jnl
+jl
+jnh
+je
+jne
+jv
+jnv
+jn
+jp
+jc
+jnc
+jz
+jnz
+jbr
+jsa
+jmp
+jr
+clr1
+not1
+set1
+tst1
+pop
+popm
+push
+pushm
+callt
+ctret
+di
+ei
+dispose
+prepare
+halt
+nop
+ldsr
+stsr
+reti
+switch
+trap
+caxi
+eiret
+feret
+fetrap
+rie
+syncm
+synccp
+jarl22
+jarl32
+jmp32
+jr22
+jr32
+bins
+ld23.dw
+ldl.w
+ldsr
+loop
+popsp
+pushsp
+rotl
+snooze
+st23.dw
+stc.w
+stsr
+synci
+bgt
+bge
+blt
+ble
+bh
+bnl
+bl
+bnh
+be
+bne
+bv
+bnv
+bn
+bp
+bc
+bnc
+bz
+bnz
+br
+bsa
+jgt17
+jge17
+jlt17
+jle17
+jh17
+jnl17
+jl17
+jnh17
+je17
+jne17
+jv17
+jnv17
+jn17
+jp17
+jc17
+jnc17
+jz17
+jnz17
+jbr17
+jsa17
+jgt9
+jge9
+jlt9
+jle9
+jh9
+jnl9
+jl9
+jnh9
+je9
+jne9
+jv9
+jnv9
+jn9
+jp9
+jc9
+jnc9
+jz9
+jnz9
+jbr9
+jsa9
+bgt17
+bge17
+blt17
+ble17
+bh17
+bnl17
+bl17
+bnh17
+be17
+bne17
+bv17
+bnv17
+bn17
+bp17
+bc17
+bnc17
+bz17
+bnz17
+br17
+bsa17
+bgt9
+bge9
+blt9
+ble9
+bh9
+bnl9
+bl9
+bnh9
+be9
+bne9
+bv9
+bnv9
+bn9
+bp9
+bc9
+bnc9
+bz9
+bnz9
+br9
+bsa9
+absf.d
+absf.s
+addf.d
+addf.s
+divf.d
+divf.s
+maxf.d
+maxf.s
+minf.d
+minf.s
+mulf.d
+mulf.s
+negf.d
+negf.s
+recipf.d
+recipf.s
+rsqrtf.d
+rsqrtf.s
+sqrtf.d
+sqrtf.s
+subf.d
+subf.s
+maddf.s
+msubf.s
+nmaddf.s
+nmsubf.s
+ceilf.dl
+ceilf.dw
+ceilf.dul
+ceilf.duw
+ceilf.sl
+ceilf.sw
+ceilf.sul
+ceilf.suw
+cvtf.dl
+cvtf.ds
+cvtf.dul
+cvtf.duw
+cvtf.dw
+cvtf.ld
+cvtf.ls
+cvtf.sd
+cvtf.sl
+cvtf.sul
+cvtf.suw
+cvtf.sw
+cvtf.uld
+cvtf.uls
+cvtf.uwd
+cvtf.uws
+cvtf.wd
+cvtf.ws
+floorf.dl
+floorf.dw
+floorf.dul
+floorf.duw
+floorf.sl
+floorf.sw
+floorf.sul
+floorf.suw
+roundf.dl
+roundf.dw
+roundf.dul
+roundf.duw
+roundf.sl
+roundf.sw
+roundf.sul
+roundf.suw
+trncf.dl
+trncf.dw
+trncf.dul
+trncf.duw
+trncf.sl
+trncf.sw
+trncf.sul
+trncf.suw
+cmpf.d
+cmpf.s
+cmpff.d
+cmpfun.d
+cmpfeq.d
+cmpfueq.d
+cmpfolt.d
+cmpfult.d
+cmpfole.d
+cmpult.d
+cmpfsf.d
+cmpfngle.d
+cmpfseq.d
+cmpfngl.d
+cmpflt.d
+cmpfnge.d
+cmpfle.d
+cmpfngt.d
+cmpff.s
+cmpfun.s
+cmpfeq.s
+cmpfueq.s
+cmpfolt.s
+cmpfult.s
+cmpfole.s
+cmpult.s
+cmpfsf.s
+cmpfngle.s
+cmpfseq.s
+cmpfngl.s
+cmpflt.s
+cmpfnge.s
+cmpfle.s
+cmpfngt.s
+cmovf.d
+cmovf.s
+cvtf.hs
+cvtf.sh
+fmaf.s
+fmsf.s
+fnmaf.s
+fnmsf.s
+cll
+
+trfsr
+HVCALL
+HVTRAP
+LDVC.SR
+STVC.SR
+DST
+EST
+LDTC.GR
+LDTC.PC
+LDTC.SR
+LDTC.VR
+STTC.GR
+STTC.PC
+STTC.SR
+STTC.VR
+CACHE
+PREF
+TLBAI
+TLBR
+TLBS
+TLBVI
+TLBW
+VAND
+VOR
+VXOR
+VNOT
+VSAR.H
+VSAR.W
+VSAR.DW
+VSHR.H
+VSHR.W
+VSHR.DW
+VSHL.H
+VSHL.W
+VSHL.DW
+VCONCAT.B
+VITLV.H
+VITLV.W
+VITLVHW.H
+VITLVWH.H
+VSHUFL.B
+VBSWAP.DW
+VBSWAP.H
+VBSWAP.W
+DUP.H
+DUP.W
+MOV.H
+MOV.W
+MOV.DW
+VLD.B
+VLD.H
+VLD.W
+VLD.DW
+VST.B
+VST.H
+VST.W
+VST.DW
+VCMOV
+MODADD
+VADD.H
+VADD.W
+VADD.DW
+VSUB.H
+VSUB.W
+VSUB.DW
+VADDSAT.H
+VADDSAT.W
+VSUBSAT.H
+VSUBSAT.W
+VADDS.H
+VADDS.W
+VSUBS.H
+VSUBS.W
+VMUL.H
+VMUL.W
+VMULT.H
+VMULT.W
+VMULCX.H
+VMULCX.W
+VCMPEQ.H
+VCMPEQ.W
+VCMPLT.H
+VCMPLT.W
+VCMPLE.H
+VCMPLE.W
+VCMPNE.H
+VCMPNE.W
+VABS.H
+VABS.W
+VNEG.H
+VNEG.W
+VMAXGT.H
+VMAXGE.H
+VMINLT.H
+VMINLE.H
+VMAXGT.W
+VMAXGE.W
+VMINLT.W
+VMINLE.W
+VMADSAT.H
+VMADSAT.W
+VMADRN.H
+VMADRN.W
+VMSUM.H
+VMSUM.W
+VMSUMAD.H
+VMSUMAD.W
+VMSUMADRE.H
+VMSUMADRE.W
+VMSUMADIM.H
+VMSUMADIM.W
+VMSUMADRN.H
+VMSUMADRN.W
+VBIQ.H
+PKUI8I16
+PKI16I32
+PKQ15Q31
+PKI16UI8
+PKI32I16
+PKQ31Q15
+PKQ30Q31
+PKI64I32
+CNVQ15Q30
+CNVQ31Q62
+CNVQ30Q15
+CNVQ62Q31
+EXPQ31
+VCALC.H
+VCALC.W
+DBCP
+DBHVTRAP
+DBPUSH
+DBRET
+DBTAG
+DBTRAP
+RMTRAP
+.CSEG
+.DSEG
+.ORG
+.VSEG
+.SET
+.FILE
+.DB
+.DB2
+.DB4
+.DB8
+.DHW
+.DW
+.DDW
+.FLOAT
+.DOUBLE
+.DS
+.ALIGN
+.PUBLIC
+.EXTERN
+.COMM
+.MACRO
+.LOCAL
+.REPT
+.IRP
+.EXITM
+.EXITMA
+.ENDM
+TEXT
+CONST
+BSS
+DATA
+SBSS
+SDATA
+SDATA23
+SBSS23
+SDATA32
+SBSS32
+TDATA
+TDATA4
+TBSS4
+TDATA5
+TBSS5
+TDATA7
+TBSS7
+TDATA8
+TBSS8
+EDATA
+EBSS
+EDATA23
+EBSS23
+ZDATA
+ZBSS
+ZCONST
+ZDATA23
+ZBSS23
+ZCONST23
+.STACK
+._LINE_TOP
+._LINE_END
+$PROCESSOR
+$INCLUDE
+$BINCLUDE
+$IFDEF
+$IFNDEF
+$IF
+<IOR name>
+
+
+;;; •¶Žš—ñ’è”
+4>>
+    'ABC'
+    'ABC P1'
+    'ABC' ,	'ABC P1'	//s“r’†‚ÌƒeƒXƒg
+<<4
+//   <IOR–¼> ‘å•¶Žš¬•¶Žš‰Â  ‚Í•Ê“rŠm”F‚·‚éB
+
+// NEW
+cynccp → syncp
+
+cvtf.hs
+cvtf.sh
+fmaf.s
+fmsf.s
+fnmaf.s
+fnmsf.s
+cll
+
+.SECTION
+.OFFSET
+.EQU
+.LINE
+
+
+$REG_MODE
+$NO_MACRO
+$MACRO
+$SDATA
+$DATA
+$NOWARNING
+$WARNING
+$IFN
+$ELSEIF
+$ELSEIFN
+$ELSE
+$ENDIF
+]]></LanguageDefinition.ExampleText>
+</LanguageDefinition>

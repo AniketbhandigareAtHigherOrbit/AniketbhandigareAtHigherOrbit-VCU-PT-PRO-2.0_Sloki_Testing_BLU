@@ -1,0 +1,14 @@
+-nocompress 
+-NOOPtimize 
+-output=Build/Output/VCU_ASW_V2.abs 
+-list=Build/Output/VCU_ASW_V2.map  
+-library=Setting/COMPILER/V2.03.00/lib/v850e3v5/rhf4n.lib 
+-library=Setting/COMPILER/V2.03.00/lib/v850e3v5/libmalloc.lib 
+-start=RESET/0,EIINTTBL.const/00000200,.const,.INIT_DSEC.const,.INIT_BSEC.const,.text,.data,R_FDL_Text.text,R_FDL_Const.const/00008000,.data.R,.bss,.stack.bss,R_FDL_Data.bss,R_FDL_CodeRam.bss/FEDE8000
+-rom=.data=.data.R 
+-stack
+-total_size
+-nologo 
+-output=Build/Output/VCU_ASW_V2.hex 
+-form=hexadecimal
+-exit
