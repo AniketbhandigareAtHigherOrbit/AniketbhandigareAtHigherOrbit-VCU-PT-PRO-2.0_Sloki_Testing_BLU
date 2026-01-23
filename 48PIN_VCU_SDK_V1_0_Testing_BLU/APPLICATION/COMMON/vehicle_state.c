@@ -7,21 +7,21 @@ uint16_t VS_RPM_Wheel_Current = 0U;
 uint16_t VS_Throttle_Wheel = 0U;
 uint16_t VS_Throttle_Rotor = 0U;
 
-
-
 uint8_t VS_KillSwitch = 0U;
 uint8_t VS_KillSwitchPrev = 0U;
 uint8_t VS_KillRecoveryActive = 0U;
 
-
 uint8_t VS_TurnLeft   = 0U;
 uint8_t VS_TurnRight  = 0U;
 uint16_t VS_TurnIntensity = 0U;   /* 0 → diff */
+uint16_t VS_TurnHoldTime_ms = 0U;
+uint16_t VS_TurnGradientDiff = 0U;
 
 uint8_t VS_Direction_Request = 0U;
 uint8_t VS_Direction         = DIR_FORWARD;
 uint8_t VS_RotorEnable       = 0U;
-uint16_t VS_TurnHoldTime_ms = 0U;
+//uint16_t VS_TurnHoldTime_ms = 0U;
+uint16_t VS_TurnEntryTime_ms = 0U;
 
 /* ================= Outputs ================= */
 uint16_t VS_RPM_Left  = 0U;

@@ -25,7 +25,7 @@ extern uint16_t VS_RPM_Rotor;
 extern uint16_t VS_RPM_Wheel;
 
 extern uint8_t  VS_MotorEnable;
-
+extern uint16_t  VS_TurnEntryTime_ms;
 /* ================= Status ================= */
 extern uint8_t VS_FaultFlag;
 
@@ -76,6 +76,8 @@ extern uint8_t VS_KillSwitchPrev;
 extern uint8_t VS_KillRecoveryActive;
 extern uint16_t VS_TurnIntensity;
 extern uint16_t VS_TurnHoldTime_ms;
+extern uint16_t VS_TurnHoldTime_ms;
+extern uint16_t VS_TurnGradientDiff;
 
 
 /* ================= Controller ================= */

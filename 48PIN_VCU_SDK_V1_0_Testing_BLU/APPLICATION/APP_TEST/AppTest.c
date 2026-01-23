@@ -394,7 +394,6 @@ void Controller_Data_Tx(void)
     CanMsgTransmit(CAN_0, DataBuff_0, 8, 0, 0, 0x12F);
 }
 
-
 static uint8_t Build_Status_Byte(uint8_t direction)
 {
     uint8_t status = 0U;

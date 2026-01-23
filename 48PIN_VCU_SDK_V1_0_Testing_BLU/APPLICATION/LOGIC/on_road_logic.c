@@ -3,6 +3,9 @@
 #include "vehicle_config.h"
 
 static uint16_t VS_DirNeutralTimer_ms = 0U;
+static uint16_t VS_TurnHoldTime_ms   = 0U;
+static uint16_t VS_TurnGradDiff_RPM = 0U;
+static uint8_t VS_TurnPrev = 0U;
 #define ONROAD_TASK_PERIOD_MS  10U
 
 /* ================= Helper: ADC → RPM ================= */
@@ -43,30 +46,63 @@ void OnRoad_Mode_Step(void)
     uint16_t diff;
     uint16_t base;
     uint16_t slew;
+    uint8_t turn_now;
+
     /* =====================================================
-     * 1. SAFETY (highest priority)
-     * ===================================================== */
+    * 1. SAFETY (highest priority)
+    * ===================================================== */
+
     /* Detect KillSwitch rising edge */
     if ((VS_KillSwitchPrev == 0U) && (VS_KillSwitch == 1U))
     {
         VS_KillRecoveryActive = 1U;
     }
-    /* Save state */
     VS_KillSwitchPrev = VS_KillSwitch;
 
+    /* ---------- KillSwitch ACTIVE (OFF = emergency stop) ---------- */
     if (VS_KillSwitch == 0U)
     {
+        /* Stop all actuators */
         VS_RPM_Left  = 0U;
         VS_RPM_Right = 0U;
         VS_RPM_Rotor = 0U;
 
         VS_RPM_Wheel_Current = 0U;
 
-        VS_CurrentDirection  = DIR_STOP;
-        VS_DirState          = DIR_STATE_IDLE;
-        VS_DirHoldCounter    = 0U;
+        /* Reset direction control */
+        VS_CurrentDirection = DIR_STOP;
+        VS_DirState         = DIR_STATE_IDLE;
+        VS_DirHoldCounter   = 0U;
+        VS_DirNeutralTimer_ms = 0U;
+
+        /* ---------- HARD RESET TURN MEMORY ---------- */
+        VS_TurnIntensity    = 0U;
+        VS_TurnHoldTime_ms  = 0U;
+        VS_TurnGradDiff_RPM = 0U;
+        VS_TurnEntryTime_ms = 0U;
+        VS_TurnPrev         = 0U;
+
+        /* ---------- Prevent aggressive recovery ---------- */
+        VS_KillRecoveryActive = 0U;
 
         return;
+    }
+    
+    if (VS_KillRecoveryActive == 1U)
+    {
+        if (VS_RPM_Wheel_Current < VC_KILL_RECOVERY_RPM_LIMIT)
+        {
+            VS_RPM_Wheel_Current = base_rpm;
+        }
+        else
+        {
+            VS_RPM_Wheel_Current =
+                Apply_RPM_Slew(base_rpm,
+                            VS_RPM_Wheel_Current,
+                            VC_RPM_SLEW_RATE);
+        }
+
+        VS_KillRecoveryActive = 0U;
     }
 
         /* =====================================================
@@ -181,23 +217,57 @@ void OnRoad_Mode_Step(void)
                             VC_RPM_SLEW_RATE);
         }
     }
-    
+        
     /* =====================================================
     * 6. TURN LOGIC (LEFT / RIGHT) — JERK-FREE
     * ===================================================== */
+    /* =====================================================
+    * 6A. DUAL TURN OVERRIDE (LEFT + RIGHT)
+    * ===================================================== */
+    #if VC_DUAL_TURN_STOP_ENABLE
+    if (VS_TurnLeft && VS_TurnRight)
+    {
+        target_left_rpm  = 0U;
+        target_right_rpm = 0U;
+
+        VS_RPM_Left  = Apply_RPM_Slew(0U, VS_RPM_Left,  VC_RPM_SLEW_RATE_EXIT);
+        VS_RPM_Right = Apply_RPM_Slew(0U, VS_RPM_Right, VC_RPM_SLEW_RATE_EXIT);
+
+        VS_RPM_Rotor = 0U;
+
+        VS_TurnIntensity    = 0U;
+        VS_TurnHoldTime_ms  = 0U;
+        VS_TurnGradDiff_RPM = 0U;
+        VS_TurnEntryTime_ms = 0U;
+
+        return;
+    }
+    #endif
+
+    /* =====================================================
+    * TURN EDGE DETECTION (for entry softening)
+    * ===================================================== */
+    turn_now = (VS_TurnLeft || VS_TurnRight);
+
+    if ((turn_now == 1U) && (VS_TurnPrev == 0U))
+    {
+        VS_TurnEntryTime_ms = 0U;   /* new turn press */
+    }
+    VS_TurnPrev = turn_now;
 
     base = VS_RPM_Wheel_Current;
 
-    /* ---------- No turn request ---------- */
+    /* ---------- No turn ---------- */
     if (!VS_TurnLeft && !VS_TurnRight)
     {
-        VS_TurnIntensity = Apply_RPM_Slew(0U,
-                                        VS_TurnIntensity,
-                                        VC_TURN_INTENSITY_SLEW);
+        VS_TurnHoldTime_ms   = 0U;
+        VS_TurnGradDiff_RPM = 0U;
+        VS_TurnEntryTime_ms = 0U;
+
+        VS_TurnIntensity = 0U;
 
         target_left_rpm  = base;
         target_right_rpm = base;
-        VS_RPM_Rotor = 0U;
     }
     else
     {
@@ -219,6 +289,54 @@ void OnRoad_Mode_Step(void)
         if (diff > VC_TURN_DIFF_MAX_RPM)
             diff = VC_TURN_DIFF_MAX_RPM;
 
+        /* =================================================
+        * LOW RPM TURN GRADIENT (TIME-BASED)
+        * ================================================= */
+        if (base < VC_TURN_GRADIENT_RPM_LIMIT)
+        {
+            if (VS_TurnHoldTime_ms < 60000U)
+                VS_TurnHoldTime_ms += ONROAD_TASK_PERIOD_MS;
+
+            if (VS_TurnHoldTime_ms >= VC_TURN_GRADIENT_DELAY_MS)
+            {
+                if ((VS_TurnHoldTime_ms % VC_TURN_GRADIENT_STEP_MS) == 0U)
+                {
+                    if (VS_TurnGradDiff_RPM < VC_TURN_GRADIENT_MAX_DIFF)
+                        VS_TurnGradDiff_RPM += VC_TURN_GRADIENT_STEP_RPM;
+                }
+            }
+        }
+        else
+        {
+            VS_TurnHoldTime_ms   = 0U;
+            VS_TurnGradDiff_RPM = 0U;
+        }
+
+        diff += VS_TurnGradDiff_RPM;
+
+        if (diff > VC_TURN_DIFF_MAX_RPM)
+            diff = VC_TURN_DIFF_MAX_RPM;
+
+        /* =================================================
+        * HIGH / MID RPM ENTRY SOFTENING (NEW)
+        * ================================================= */
+    #if VC_TURN_ENTRY_SOFTEN_ENABLE
+        if ((base >= VC_TURN_ENTRY_RPM_START) &&
+            (VS_TurnEntryTime_ms < VC_TURN_ENTRY_TIME_MS))
+        {
+            uint16_t entry_limit;
+
+            VS_TurnEntryTime_ms += ONROAD_TASK_PERIOD_MS;
+
+            entry_limit =
+                (diff * VC_TURN_ENTRY_MAX_RATIO_NUM) /
+                VC_TURN_ENTRY_MAX_RATIO_DEN;
+
+            if (diff > entry_limit)
+                diff = entry_limit;
+        }
+    #endif
+
         /* ---------- Ramp TURN INTENSITY ---------- */
         VS_TurnIntensity =
             Apply_RPM_Slew(diff,
@@ -228,21 +346,21 @@ void OnRoad_Mode_Step(void)
         /* ---------- Apply yaw ---------- */
         if (VS_TurnLeft)
         {
-            target_left_rpm  =
+            target_left_rpm =
                 (base > VS_TurnIntensity) ?
                 (base - VS_TurnIntensity) :
                 VC_TURN_INNER_MIN_RPM;
 
             target_right_rpm = base + (VS_TurnIntensity / 2U);
         }
-        else /* RIGHT */
+        else
         {
             target_right_rpm =
                 (base > VS_TurnIntensity) ?
                 (base - VS_TurnIntensity) :
                 VC_TURN_INNER_MIN_RPM;
 
-            target_left_rpm  = base + (VS_TurnIntensity / 2U);
+            target_left_rpm = base + (VS_TurnIntensity / 2U);
         }
     }
 
@@ -253,12 +371,14 @@ void OnRoad_Mode_Step(void)
     if (target_right_rpm > VC_WHEEL_MAX_RPM)
         target_right_rpm = VC_WHEEL_MAX_RPM;
 
-    /* ---------- Slew (symmetric at low RPM) ---------- */
-    slew =(base < VC_TURN_LOW_RPM_LIMIT) ?VC_RPM_SLEW_RATE_TURN_OUTER : VC_RPM_SLEW_RATE_TURN_INNER;
+    /* ---------- Slew ---------- */
+    slew =
+        (base < VC_TURN_LOW_RPM_LIMIT) ?
+        VC_RPM_SLEW_RATE_TURN_OUTER :
+        VC_RPM_SLEW_RATE_TURN_INNER;
 
     VS_RPM_Left  = Apply_RPM_Slew(target_left_rpm,  VS_RPM_Left,  slew);
     VS_RPM_Right = Apply_RPM_Slew(target_right_rpm, VS_RPM_Right, slew);
-
 
     /* =====================================================
      * 7. ROTOR LOGIC (independent)
