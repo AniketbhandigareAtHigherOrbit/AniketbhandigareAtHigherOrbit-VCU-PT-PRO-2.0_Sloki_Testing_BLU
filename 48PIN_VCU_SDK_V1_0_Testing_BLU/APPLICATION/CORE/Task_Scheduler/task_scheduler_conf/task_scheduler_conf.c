@@ -44,7 +44,7 @@
  ******************************************************************************/
 extern void ADC_Service_Run(void);
 extern void GPIO_Service_Run(void);
-extern void CAN_functionality(void);
+extern void Vehicle_Task_10ms(void);
 extern void RPM_Service_Run(void);
 extern void OnRoad_Mode_Step(void);
 extern void Direction_Logic_Run(void);
@@ -74,9 +74,9 @@ TaskConf_St_t TaskConf_St[TOTAL_TASK] =
     { Battery_Timeout_Task_100ms, TS_PERIODICTY(100), INIT_VALUE },
     { CAN_Tx_VCUData,         TS_PERIODICTY(20),  INIT_VALUE },  /* Vehicle + Battery */
     { Controller_Data_Tx,     TS_PERIODICTY(20),  INIT_VALUE },  /* Controller mirror */
-    { OnRoad_Mode_Step,       TS_PERIODICTY(50),  INIT_VALUE },
-    { CAN_functionality,  TS_PERIODICTY(50),  INIT_VALUE },
-    { can_tx_Fucntion,  TS_PERIODICTY(100),  INIT_VALUE },
+    //{ OnRoad_Mode_Step,       TS_PERIODICTY(50),  INIT_VALUE },
+    { Vehicle_Task_10ms,  TS_PERIODICTY(20),  INIT_VALUE },
+    //{ can_tx_Fucntion,  TS_PERIODICTY(100),  INIT_VALUE },
 
 };
 /*******************************************************************************
