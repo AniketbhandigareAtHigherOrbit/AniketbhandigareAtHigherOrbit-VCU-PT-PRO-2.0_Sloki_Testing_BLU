@@ -23,8 +23,6 @@
 #include"AppTest.h"
 #include"controller_can_rx.h"
 #include"battery_can_rx.h"
-#include "bt_can_rx.h"
-
 /*******************************************************************************
  *  MACRO DEFINITION
  ******************************************************************************/
@@ -34,8 +32,8 @@
  ******************************************************************************/
 
 
-const uint8_t Can0_Rx_filter_u8 = 2;
-const uint8_t Can1_Rx_filter_u8 = 1;
+const uint8_t Can0_Rx_filter_u8 = 1;
+const uint8_t Can1_Rx_filter_u8 = 6;
 const uint8_t Can2_Rx_filter_u8 = 7;
 
 
@@ -47,10 +45,8 @@ const uint8_t Can2_Rx_filter_u8 = 7;
  ******************************************************************************/
 CanRxFilterConf_St_t Can0RxFilterConf_aSt[TOTAL_RX_FILTER_CAN_0] =
 {
-    /* -------- Bluetooth Command (ESP32) -------- */
-    {0x18FF4A01U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_BT_Command_Rx},
-
-    {0x0746CD62U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
+    
+      {0x0746CD62U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
     //{0x0746D608, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
     //{0x074, 0x1FF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
     //0x0746CD04

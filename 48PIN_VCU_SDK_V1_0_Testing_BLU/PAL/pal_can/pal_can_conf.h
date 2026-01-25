@@ -30,7 +30,7 @@
 Note:
     Maximum number of message filter per channel is 128 
 */
-#define TOTAL_RX_FILTER_CAN_0       2
+#define TOTAL_RX_FILTER_CAN_0       1
 #define TOTAL_RX_FILTER_CAN_1       6
 #define TOTAL_RX_FILTER_CAN_2       7
 

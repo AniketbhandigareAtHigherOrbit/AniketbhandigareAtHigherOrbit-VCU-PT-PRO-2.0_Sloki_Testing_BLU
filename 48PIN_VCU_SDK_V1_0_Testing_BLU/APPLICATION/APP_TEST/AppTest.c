@@ -2,9 +2,8 @@
 #include "databank.h"
 #include "pal_can_if.h"
 #include "vehicle_state.h"
-#include "bt_control_logic.h"
+
 #include "vehicle_config.h"
-#include "bt_control_state.h"
 
 #define MAKE_CAN_ID(dev_id) \
     ((VC_BASE_CAN_ID & 0xFFFF00FFUL) | ((uint32_t)(dev_id) << 8))
@@ -553,25 +552,4 @@ void CAN_functionality(void)
 void Battery_Timeout_Task_100ms(void)
 {
     Battery_Timeout_Task(100U);
-}
-
-void Vehicle_Task_10ms(void)
-{
-    if (BT_State.mode == BT_MODE_ACTIVE)
-    {
-        BT_Control_Step();
-        CanMsgTransmit(CAN_2, DataBuff_2, 8, 0, 0, 0x184);
-        memset(DataBuff_0, 0, sizeof(DataBuff_0));
-        DataBuff_0[0] = 0x04; /* MUX */
-        U16_TO_CAN_LE(DataBuff_0, 1, VS_RPM_Left);
-        U16_TO_CAN_LE(DataBuff_0, 3, VS_RPM_Right);
-        U16_TO_CAN_LE(DataBuff_0, 5, VS_RPM_Rotor);
-        CanMsgTransmit(CAN_2, DataBuff_0, 8, 0, 0, 205);
-    }
-    else
-    {
-        OnRoad_Mode_Step();   /* existing code */
-    }
-
-    CAN_functionality();
 }

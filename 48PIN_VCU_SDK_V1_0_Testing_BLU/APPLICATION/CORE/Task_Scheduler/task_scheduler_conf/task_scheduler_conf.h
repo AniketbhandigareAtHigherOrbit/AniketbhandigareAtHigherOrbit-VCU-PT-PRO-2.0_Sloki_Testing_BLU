@@ -60,7 +60,7 @@ typedef enum
     TASK_ONROAD_LOGIC,
     TASK_SENSOR_E,
     TASK_TIMEOUTCANRX_E,
-    //TASK_BROADCAST_E,
+    TASK_BROADCAST_E,
     TOTAL_TASK
 } Task_En_t;
 
