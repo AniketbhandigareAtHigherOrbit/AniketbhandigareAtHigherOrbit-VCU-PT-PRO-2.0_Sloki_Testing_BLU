@@ -23,6 +23,8 @@
 #include"AppTest.h"
 #include"controller_can_rx.h"
 #include"battery_can_rx.h"
+#include "bt_can_rx.h"
+
 /*******************************************************************************
  *  MACRO DEFINITION
  ******************************************************************************/
@@ -32,8 +34,8 @@
  ******************************************************************************/
 
 
-const uint8_t Can0_Rx_filter_u8 = 1;
-const uint8_t Can1_Rx_filter_u8 = 6;
+const uint8_t Can0_Rx_filter_u8 = 2;
+const uint8_t Can1_Rx_filter_u8 = 1;
 const uint8_t Can2_Rx_filter_u8 = 7;
 
 
@@ -45,8 +47,10 @@ const uint8_t Can2_Rx_filter_u8 = 7;
  ******************************************************************************/
 CanRxFilterConf_St_t Can0RxFilterConf_aSt[TOTAL_RX_FILTER_CAN_0] =
 {
-    
-      {0x0746D608U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
+    /* -------- Bluetooth Command (ESP32) -------- */
+    {0x18FF4A01U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_BT_Command_Rx},
+
+    {0x0746CD62U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
     //{0x0746D608, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
     //{0x074, 0x1FF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
     //0x0746CD04
@@ -56,7 +60,7 @@ CanRxFilterConf_St_t Can0RxFilterConf_aSt[TOTAL_RX_FILTER_CAN_0] =
 CanRxFilterConf_St_t Can1RxFilterConf_aSt[TOTAL_RX_FILTER_CAN_1] =
 {
     /* -------- Controller 4 (Left Wheel) -------- */
-    {0x0746CD04U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
+    {0x0746CE3EU, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
    // {0xCF11E04, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
    // {0xCF11F04, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
 
@@ -72,7 +76,7 @@ CanRxFilterConf_St_t Can1RxFilterConf_aSt[TOTAL_RX_FILTER_CAN_1] =
 CanRxFilterConf_St_t Can2RxFilterConf_aSt[TOTAL_RX_FILTER_CAN_2] = 
 {
     
-    {0x0746CD04U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
+    {0x0746CE3EU, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
 
     {0xCF11E04, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
     {0xCF11F04, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},

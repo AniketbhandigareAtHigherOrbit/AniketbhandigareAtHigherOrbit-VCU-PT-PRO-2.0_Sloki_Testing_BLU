@@ -8,5 +8,5 @@ uint8_t DataBuff_4[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 
 void can_tx_Fucntion()
 {
-   CanMsgTransmit(CAN_1, DataBuff_4, 8, 0, 0, 0x184);
+   CanMsgTransmit(CAN_2, DataBuff_4, 8, 0, 0, 0x184);
 }
