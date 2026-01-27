@@ -9,7 +9,7 @@ const uint16_t VC_ADC_MAX_VALUE = 4095U;   /* 12-bit ADC */
 /* =========================================================
  *  RPM CONFIG
  * ========================================================= */
-const uint16_t VC_WHEEL_MAX_RPM = 1300U;
+const uint16_t VC_WHEEL_MAX_RPM = 1500U;
 const uint16_t VC_ROTOR_MAX_RPM = 3000U;
 
 /* =========================================================

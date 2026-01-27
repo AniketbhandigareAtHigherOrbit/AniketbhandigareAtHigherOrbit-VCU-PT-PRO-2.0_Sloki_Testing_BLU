@@ -41,18 +41,18 @@
 #define VC_TURN_INTENSITY_SLEW_LOW    80U
 #define VC_TURN_INTENSITY_SLEW_HIGH   40U   /* slows entry at high speed */
 /* ---------- Turn RPM limits ---------- */
-#define VC_TURN_OUTER_BOOST_MAX       250U  /* prevents handle pull */
+#define VC_TURN_OUTER_BOOST_MAX       200U  /* prevents handle pull */
 /* ---------- Turn exit ---------- */
-#define VC_RPM_SLEW_RATE_EXIT         150U  /* faster straightening */
-#define VC_RPM_SLEW_RATE_TURN         90U
-#define VC_TURN_HIGH_RPM_START        900U
-#define VC_KILL_RECOVERY_RPM_LIMIT   300U
+#define VC_RPM_SLEW_RATE_EXIT         550U  /* faster straightening */
+#define VC_RPM_SLEW_RATE_TURN         80U
+#define VC_TURN_HIGH_RPM_START        990U
+#define VC_KILL_RECOVERY_RPM_LIMIT   250U
 
 /* ================= LOW RPM TURN GRADIENT ================= */
 /* Enable gradient turn at low RPM */
 #define VC_TURN_GRADIENT_ENABLE        1U
 /* Time before sharpening starts */
-#define VC_TURN_GRADIENT_DELAY_MS      2500U   /* 3 seconds */
+#define VC_TURN_GRADIENT_DELAY_MS      4000U   /* 3 seconds */
 /* Gradient ramp */
 #define VC_TURN_GRADIENT_STEP_MS       100U    /* update every 100ms */
 #define VC_TURN_GRADIENT_STEP_RPM      30U     /* increase diff by this */
