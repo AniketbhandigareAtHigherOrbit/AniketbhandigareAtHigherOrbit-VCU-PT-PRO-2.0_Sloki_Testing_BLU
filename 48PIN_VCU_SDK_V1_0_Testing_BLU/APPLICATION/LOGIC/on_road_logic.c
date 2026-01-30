@@ -51,7 +51,7 @@ void OnRoad_Mode_Step(void)
     /* =====================================================
     * 1. SAFETY (highest priority)
     * ===================================================== */
-
+    base_rpm = Throttle_To_RPM(VS_Throttle_Wheel);
     /* Detect KillSwitch rising edge */
     if ((VS_KillSwitchPrev == 0U) && (VS_KillSwitch == 1U))
     {

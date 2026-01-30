@@ -21,20 +21,7 @@ void BT_Control_Step(void)
     uint16_t base;
     uint16_t diff;
 
-        /* Bluetooth owns direction */
-    if (BT_State.drive_dir == 1U)
-    {
-        VS_CurrentDirection = 1U;   /* FWD */
-    }
-    else if (BT_State.drive_dir == 2U)
-    {
-        VS_CurrentDirection = 2U;   /* REV */
-    }
-    else
-    {
-        VS_CurrentDirection = 0U;   /* STOP */
-    }
-
+    /* ================= MODE CHECK ================= */
     if (BT_State.mode != BT_MODE_ACTIVE)
         return;
 
@@ -50,7 +37,18 @@ void BT_Control_Step(void)
     }
 
     /* ================= DIRECTION ================= */
-    VS_CurrentDirection = BT_State.drive_dir;
+    if (BT_State.drive_dir == 1U)
+    {
+        VS_CurrentDirection = 1U;   /* FWD */
+    }
+    else if (BT_State.drive_dir == 2U)
+    {
+        VS_CurrentDirection = 2U;   /* REV */
+    }
+    else
+    {
+        VS_CurrentDirection = 0U;   /* STOP */
+    }
 
     /* ================= BASE RPM ================= */
     base = BT_State.target_rpm;

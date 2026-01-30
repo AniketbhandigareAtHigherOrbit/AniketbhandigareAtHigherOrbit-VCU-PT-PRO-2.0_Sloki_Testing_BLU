@@ -43,7 +43,7 @@
 /* ---------- Turn RPM limits ---------- */
 #define VC_TURN_OUTER_BOOST_MAX       250U  /* prevents handle pull */
 /* ---------- Turn exit ---------- */
-#define VC_RPM_SLEW_RATE_EXIT         150U  /* faster straightening */
+#define VC_RPM_SLEW_RATE_EXIT         500U  /* faster straightening */
 #define VC_RPM_SLEW_RATE_TURN         90U
 #define VC_TURN_HIGH_RPM_START        900U
 #define VC_KILL_RECOVERY_RPM_LIMIT   300U

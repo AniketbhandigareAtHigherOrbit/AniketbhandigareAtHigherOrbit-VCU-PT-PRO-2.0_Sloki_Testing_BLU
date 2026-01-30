@@ -1,15 +1,6 @@
 #ifndef VCU_SENSORS_H
 #define VCU_SENSORS_H
 
-//#include <stdint.h>
-
-/* =========================================================
- *  GLOBAL CURRENT VALUES (AMPS)
- * ========================================================= */
-extern float G_Current_1_A;
-extern float G_Current_2_A;
-extern float G_Current_3_A;
-
 /* =========================================================
  *  FUNCTIONS
  * ========================================================= */

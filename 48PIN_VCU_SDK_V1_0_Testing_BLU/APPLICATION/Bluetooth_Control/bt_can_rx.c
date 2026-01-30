@@ -17,13 +17,20 @@ void Call_Back_BT_Command_Rx(uint8_t CanNum_u8,
     if (Data_pu8[0] != BT_CMD_MAGIC)
         return;
 
-    /* Update Bluetooth state */
+    /* Optional: only accept when BT mode enabled
+       (remove this if mode is set ONLY by BT frames) */
+    /* if (BT_State.mode != BT_MODE_ACTIVE)
+        return; */
+
+    /* ================= UPDATE BT STATE ================= */
     BT_State.drive_dir    = Data_pu8[1];
     BT_State.target_rpm   = (uint16_t)((Data_pu8[2] << 8) | Data_pu8[3]);
     BT_State.steering     = Data_pu8[4];
     BT_State.rotor_enable = Data_pu8[5];
 
     BT_State.alive_cnt    = Data_pu8[7];
+
+    /* ================= WATCHDOG ================= */
     BT_State.timeout_ms   = BT_ALIVE_TIMEOUT_MS;
     BT_State.mode         = BT_MODE_ACTIVE;
 }

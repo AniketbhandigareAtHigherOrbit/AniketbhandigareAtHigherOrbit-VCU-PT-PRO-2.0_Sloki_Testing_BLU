@@ -173,56 +173,6 @@ void Test_Adc(void)
   return;
 }
 
-/*void CAN_functionality()
-{
-  // void CAN1_Tx_Test1(uint8_t CanNum_u8, uint8_t *DataBuff_pu8, uint8_t Dlc_u8, uint8_t CanMode_u8, uint8_t Ide_u8, uint32_t CanId_u32)
-  // {
-  Vehicle_ReadInputs();   
-  Vehicle_SendState_CAN1();
-
-  DataBuff_1[0] = 1;
-  DataBuff_1[1] = 1;
-  DataBuff_1[2] = 1;
-  DataBuff_1[3] = 1;
-  DataBuff_1[4] = 1;
-  DataBuff_1[5] = 1;
-  DataBuff_1[6] = 1;
-  DataBuff_1[7] = 1;
-  //CanMsgTransmit(CAN_2, DataBuff_1, 8, 0, 0, 0x181);
-  // return;
-  // }
-
-  // void CAN0_Tx_Test0(uint8_t CanNum_u8, uint8_t *DataBuff_pu8, uint8_t Dlc_u8, uint8_t CanMode_u8, uint8_t Ide_u8, uint32_t CanId_u32)
-  // {
-
-  DataBuff_0[0] = 2;
-  DataBuff_0[1] = 2;
-  DataBuff_0[2] = 2;
-  DataBuff_0[3] = 2;
-  DataBuff_0[4] = 2;
-  DataBuff_0[5] = 2;
-  DataBuff_0[6] = 2;
-  DataBuff_0[7] = 2;
-  CanMsgTransmit(CAN_0, DataBuff_0, 8, 0, 0, 0x180);
-  // return;
-  // }
-
-  // void CAN2_Tx_Test2(uint8_t CanNum_u8, uint8_t *DataBuff_pu8, uint8_t Dlc_u8, uint8_t CanMode_u8, uint8_t Ide_u8, uint32_t CanId_u32)
-  // {
-  DataBuff_2[0] = 3;
-  DataBuff_2[0] = 3;
-  DataBuff_2[1] = 3;
-  DataBuff_2[2] = 3;
-  DataBuff_2[3] = 3;
-  DataBuff_2[4] = 3;
-  DataBuff_2[5] = 3;
-  DataBuff_2[6] = 3;
-  DataBuff_2[7] = 3;
-  CanMsgTransmit(CAN_2, DataBuff_2, 8, 0, 0, 0x182);
-  //   return;
-  // }
-}*/
-
 void fun1()
 {
    CanMsgTransmit(CAN_2, DataBuff_2, 8, 0, 0, 0x183);
@@ -242,6 +192,20 @@ void fun4()
 
 //=============================================================================================================================================================================
 //LSB AND THEN MSB
+static uint16_t Current_To_CAN(float current_A)
+{
+    /* Negative protection */
+    if (current_A < 0.0f)
+        current_A = 0.0f;
+
+    /* Upper bound protection */
+    if (current_A > 600.0f)
+        current_A = 600.0f;
+
+    /* 0.1 A per bit, rounded */
+    return (uint16_t)(current_A * 10.0f + 0.5f);
+}
+
 #define U16_TO_CAN_LE(buf, idx, val)            \
     do {                                       \
         (buf)[(idx)]     = (uint8_t)((val) & 0xFFU);        \
@@ -271,12 +235,12 @@ void CAN_Tx_VCUData(void)
     CanMsgTransmit(CAN_0, DataBuff_0, 8, 0, 0, 202);   
 
     /* ================= ID 204 : Current Sensors ================= */
-    //memset(DataBuff_0, 0, sizeof(DataBuff_0));
-    //DataBuff_0[0] = 0x03; /* MUX */
-    //U16_TO_CAN_LE(DataBuff_0, 1, (uint16_t)(VS_Current_1_A * 10.0f));
-    //U16_TO_CAN_LE(DataBuff_0, 3, (uint16_t)(VS_Current_2_A * 10.0f));
-    //U16_TO_CAN_LE(DataBuff_0, 5, (uint16_t)(VS_Current_3_A * 10.0f));
-    //CanMsgTransmit(CAN_0, DataBuff_0, 8, 0, 0, 204);
+    memset(DataBuff_0, 0, sizeof(DataBuff_0));
+    DataBuff_0[0] = 0x03; /* MUX */
+    U16_TO_CAN_LE(DataBuff_0, 1, Current_To_CAN(VS_Current_1_A));
+    U16_TO_CAN_LE(DataBuff_0, 3, Current_To_CAN(VS_Current_2_A));
+    U16_TO_CAN_LE(DataBuff_0, 5, Current_To_CAN(VS_Current_3_A));
+    CanMsgTransmit(CAN_0, DataBuff_0, 8, 0, 0, 204);
 
     /* ================= ID 205 : RPM Outputs ================= */
     memset(DataBuff_0, 0, sizeof(DataBuff_0));
@@ -359,7 +323,7 @@ void CAN_Tx_VCUData(void)
 void Controller_Data_Tx(void)
 {
     uint8_t DataBuff_0[8];
-    uint32_t CanId_u32;
+    //uint32_t CanId_u32;
     /* ================= LEFT WHEEL ================= */
     memset(DataBuff_0, 0, sizeof(DataBuff_0));
     if (CTRL_IS_ALIVE(CTRL_WHEEL_LEFT))
@@ -590,7 +554,7 @@ void CAN_functionality(void)
 /* 100 ms task */
 void Battery_Timeout_Task_100ms(void)
 {
-    Battery_Timeout_Task(100U);
+    Battery_Timeout_Task(10000U);
 }
 
 void Vehicle_Task_10ms(void)
