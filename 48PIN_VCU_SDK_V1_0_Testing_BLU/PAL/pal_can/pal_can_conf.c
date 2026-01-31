@@ -75,16 +75,14 @@ CanRxFilterConf_St_t Can2RxFilterConf_aSt[TOTAL_RX_FILTER_CAN_2] =
     {0x0746CE3EU, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx_2},
     {0x0746CD04U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx_1},
 
-    {0xCF11E04, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
-    {0xCF11F04, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
-    /* -------- Controller 5 (Rotor) -------- */
-    {0xCF11E05, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
-    {0xCF11F05, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
-    /* -------- Controller 6 (Right Wheel) -------- */
-    {0xCF11E06, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
-    {0xCF11F06, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
-      //{0x0746D608U, 0x1FFFFFFF, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Battery_Rx},
-   //0x0746CD62
+    /* Controllers: accept ALL nodes for Message E and F */
+    {0xCF11E04U, 0x1FFFFFFFU, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
+    {0xCF11F04U, 0x1FFFFFFFU, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
+    {0xCF11E05U, 0x1FFFFFFFU, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
+    {0xCF11F05U, 0x1FFFFFFFU, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
+    {0xCF11E06U, 0x1FFFFFFFU, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
+    {0xCF11F06U, 0x1FFFFFFFU, RX_FIFO_BUFF_E, EXT_IDE_E, Call_Back_Controller_Rx},
+
 };
 
 RSCANchannelConf_St_t RSCANchannelConf_aSt[] = 

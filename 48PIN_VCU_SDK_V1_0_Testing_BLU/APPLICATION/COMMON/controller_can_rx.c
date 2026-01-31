@@ -1,9 +1,91 @@
 #include "controller_can_rx.h"
 #include "vehicle_state.h"
 
-/* ---------------------------------------------------------
- * Controller RX callback (exact-ID based)
- * --------------------------------------------------------- */
+/* Base IDs (maskable) */
+#define CTRL_MSG_E_BASE   (0xCF11E00UL)
+#define CTRL_MSG_F_BASE   (0xCF11F00UL)
+#define CTRL_ID_MASK      (0xFFFFFF00UL)
+#define CTRL_NODE_MASK    (0x000000FFUL)
+
+/* Node IDs (last byte) */
+#define NODE_LEFT   (0x04U)
+#define NODE_ROTOR  (0x05U)
+#define NODE_RIGHT  (0x06U)
+
+/* Bounds-safe little-endian read */
+static uint16_t rd_u16_le(const uint8_t *p, uint8_t dlc, uint8_t idx, uint8_t *ok)
+{
+    if ((uint8_t)(idx + 1U) >= dlc) { *ok = 0U; return 0U; }
+    *ok = 1U;
+    return (uint16_t)p[idx] | ((uint16_t)p[idx + 1U] << 8);
+}
+
+/* ---------------- Message E parse (only updates fields that exist) ---------------- */
+static void Controller_Parse_MessageE(ControllerIndex_t ctrl_idx,
+                                      const uint8_t *d,
+                                      uint8_t dlc)
+{
+    uint8_t ok;
+    uint16_t raw;
+
+    /* speed: bytes 0..1 */
+    raw = rd_u16_le(d, dlc, 0U, &ok);
+    if (ok) VS_Controller[ctrl_idx].speed_rpm = raw;
+
+    /* motor current: bytes 2..3 */
+    raw = rd_u16_le(d, dlc, 2U, &ok);
+    if (ok) VS_Controller[ctrl_idx].motor_current_A = (int16_t)(raw / 10U);
+
+    /* battery voltage: bytes 4..5 */
+    raw = rd_u16_le(d, dlc, 4U, &ok);
+    if (ok) VS_Controller[ctrl_idx].battery_voltage_dV = (uint16_t)(raw / 10U);
+
+    /* error code: bytes 6..7 */
+    raw = rd_u16_le(d, dlc, 6U, &ok);
+    if (ok) VS_Controller[ctrl_idx].error_code = raw;
+}
+
+/* ---------------- Message F parse (only updates fields that exist) ---------------- */
+static void Controller_Parse_MessageF(ControllerIndex_t ctrl_idx,
+                                      const uint8_t *d,
+                                      uint8_t dlc)
+{
+    uint8_t ok;
+    uint16_t raw;
+
+    /* speed: bytes 0..1 */
+    raw = rd_u16_le(d, dlc, 0U, &ok);
+    if (ok) VS_Controller[ctrl_idx].speed_rpm = raw;
+
+    /* controller temp: byte 2 */
+    if (dlc > 2U) VS_Controller[ctrl_idx].controller_temp_C = (int8_t)d[2] - 40;
+
+    /* motor temp: byte 3 */
+    if (dlc > 3U) VS_Controller[ctrl_idx].motor_temp_C = (int8_t)d[3] - 30;
+
+    /* dirs: byte 4 */
+    if (dlc > 4U)
+    {
+        VS_Controller[ctrl_idx].command_dir  =  d[4]        & 0x03U;
+        VS_Controller[ctrl_idx].feedback_dir = (d[4] >> 2)  & 0x03U;
+    }
+
+    /* switch bitmap: byte 5 */
+    if (dlc > 5U) VS_Controller[ctrl_idx].switch_status = d[5];
+}
+
+/* Map node-id to controller index */
+static uint8_t Node_To_CtrlIndex(uint8_t node, ControllerIndex_t *out)
+{
+    switch (node)
+    {
+        case NODE_LEFT:  *out = CTRL_WHEEL_LEFT;  return 1U;
+        case NODE_ROTOR: *out = CTRL_ROTOR;       return 1U;
+        case NODE_RIGHT: *out = CTRL_WHEEL_RIGHT; return 1U;
+        default: return 0U;
+    }
+}
+
 void Call_Back_Controller_Rx(uint8_t CanNum_u8,
                              uint8_t Channel_u8,
                              uint8_t *DataBuff_pu8,
@@ -12,102 +94,33 @@ void Call_Back_Controller_Rx(uint8_t CanNum_u8,
                              uint8_t Ide_u8,
                              uint32_t CanId_u32)
 {
-    ControllerIndex_t ctrl_idx;
-    uint16_t raw;
+    ControllerIndex_t idx;
+    uint32_t base = (CanId_u32 & CTRL_ID_MASK);
+    uint8_t node  = (uint8_t)(CanId_u32 & CTRL_NODE_MASK);
 
-    if (Dlc_u8 < 8U)
+    /* Only process our nodes */
+    if (!Node_To_CtrlIndex(node, &idx))
     {
-        return;
+        goto out;
     }
 
-    /* ---------- Map CAN ID → Controller ---------- */
-    switch (CanId_u32)
+    /* Parse E/F */
+    if (base == CTRL_MSG_E_BASE)
     {
-        /* Controller 4 : Left Wheel */
-        case 0xCF11E04:
-        case 0xCF11F04:
-            ctrl_idx = CTRL_WHEEL_LEFT;
-            break;
-
-        /* Controller 5 : Rotor */
-        case 0xCF11E05:
-        case 0xCF11F05:
-            ctrl_idx = CTRL_ROTOR;
-            break;
-
-        /* Controller 6 : Right Wheel */
-        case 0xCF11E06:
-        case 0xCF11F06:
-            ctrl_idx = CTRL_WHEEL_RIGHT;
-            break;
-
-        default:
-            return;
+        Controller_Parse_MessageE(idx, DataBuff_pu8, Dlc_u8);
+        VS_Controller[idx].alive = 1U;
+    }
+    else if (base == CTRL_MSG_F_BASE)
+    {
+        Controller_Parse_MessageF(idx, DataBuff_pu8, Dlc_u8);
+        VS_Controller[idx].alive = 1U;
+    }
+    else
+    {
+        /* Not our message type */
     }
 
-    /* =================================================
-     * MESSAGE E : Speed, Current, Voltage, Error
-     * IDs : 0xCF11E04 / 05 / 06
-     * ================================================= */
-    if ((CanId_u32 & 0xFFFFFF00UL) == 0xCF11E00UL)
-    {
-        /* Speed (1 rpm / bit) */
-        VS_Controller[ctrl_idx].speed_rpm =
-            (uint16_t)DataBuff_pu8[0] |
-            ((uint16_t)DataBuff_pu8[1] << 8);
-
-        /* Motor current (0.1 A / bit) */
-        raw =
-            (uint16_t)DataBuff_pu8[2] |
-            ((uint16_t)DataBuff_pu8[3] << 8);
-        VS_Controller[ctrl_idx].motor_current_A =
-            (int16_t)(raw / 10);
-
-        /* Battery voltage (0.1 V / bit) */
-        raw =
-            (uint16_t)DataBuff_pu8[4] |
-            ((uint16_t)DataBuff_pu8[5] << 8);
-        VS_Controller[ctrl_idx].battery_voltage_dV =
-            raw / 10;
-
-        /* Error code */
-        VS_Controller[ctrl_idx].error_code =
-            (uint16_t)DataBuff_pu8[6] |
-            ((uint16_t)DataBuff_pu8[7] << 8);
-    }
-
-    /* =================================================
-     * MESSAGE F : Speed, Temperature, Direction, Status
-     * IDs : 0xCF11F04 / 05 / 06
-     * ================================================= */
-    else if ((CanId_u32 & 0xFFFFFF00UL) == 0xCF11F00UL)
-    {
-        /* Speed */
-        VS_Controller[ctrl_idx].speed_rpm =
-            (uint16_t)DataBuff_pu8[0] |
-            ((uint16_t)DataBuff_pu8[1] << 8);
-
-        /* Temperatures */
-        VS_Controller[ctrl_idx].controller_temp_C =
-            (int8_t)DataBuff_pu8[2] - 40;
-
-        VS_Controller[ctrl_idx].motor_temp_C =
-            (int8_t)DataBuff_pu8[3] - 30;
-
-        /* Direction (bit-packed) */
-        VS_Controller[ctrl_idx].command_dir =
-            DataBuff_pu8[4] & 0x03U;
-
-        VS_Controller[ctrl_idx].feedback_dir =
-            (DataBuff_pu8[4] >> 2) & 0x03U;
-
-        /* Switch / Hall status bitmap */
-        VS_Controller[ctrl_idx].switch_status =
-            DataBuff_pu8[5];
-    }
-
-    VS_Controller[ctrl_idx].alive = 1U;
-
+out:
     (void)CanNum_u8;
     (void)Channel_u8;
     (void)CanMode_u8;

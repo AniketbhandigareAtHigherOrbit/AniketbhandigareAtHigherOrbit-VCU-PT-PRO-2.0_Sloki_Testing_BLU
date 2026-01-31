@@ -58,27 +58,18 @@ extern void can_tx_Fucntion(void);
  ******************************************************************************/
 const uint8_t Total_task_u8=TOTAL_TASK;
 TaskConf_St_t TaskConf_St[TOTAL_TASK] =
-{	
-   
-    //{Test_Adc               ,TS_PERIODICTY(50),  INIT_VALUE},
-    // {Test_GpioInput         ,TS_PERIODICTY(50),  INIT_VALUE},
-    // {Test_GpioOutput        ,TS_PERIODICTY(50),  INIT_VALUE},
-    // {CAN_functionality        ,TS_PERIODICTY(50),  INIT_VALUE},
-    //  {fun1        ,TS_PERIODICTY(50),  INIT_VALUE},
-    //  {fun2        ,TS_PERIODICTY(50),  INIT_VALUE},
-    //  {fun3       ,TS_PERIODICTY(50),  INIT_VALUE},
-    //  {fun4       ,TS_PERIODICTY(50),  INIT_VALUE},
-    { ADC_Service_Run,        TS_PERIODICTY(10),  INIT_VALUE },
-    { GPIO_Service_Run,       TS_PERIODICTY(10),  INIT_VALUE },
-    { VCU_Sensors_10ms,       TS_PERIODICTY(10),  INIT_VALUE },
-    { Battery_Timeout_Task_100ms, TS_PERIODICTY(10000), INIT_VALUE },
-    { CAN_Tx_VCUData,         TS_PERIODICTY(20),  INIT_VALUE },  /* Vehicle + Battery */
-    { Controller_Data_Tx,     TS_PERIODICTY(20),  INIT_VALUE },  /* Controller mirror */
-    //{ OnRoad_Mode_Step,       TS_PERIODICTY(50),  INIT_VALUE },
-    { Vehicle_Task_10ms,  TS_PERIODICTY(20),  INIT_VALUE },
-    //{ can_tx_Fucntion,  TS_PERIODICTY(100),  INIT_VALUE },
-
+{
+    { ADC_Service_Run,            TS_PERIODICTY(10U),   INIT_VALUE },
+    { GPIO_Service_Run,           TS_PERIODICTY(10U),   INIT_VALUE },
+    { VCU_Sensors_10ms,           TS_PERIODICTY(10U),   INIT_VALUE },
+    /* BUGFIX: was 10000ms, but function is explicitly 100ms */
+    //{ Battery_Timeout_Task_100ms, TS_PERIODICTY(10000U),  INIT_VALUE },
+    { CAN_Tx_VCUData,             TS_PERIODICTY(20U),   INIT_VALUE },  /* Vehicle + Battery */
+    { Controller_Data_Tx,         TS_PERIODICTY(20U),   INIT_VALUE },  /* Controller mirror */
+    /* BUGFIX / consistency: function assumes 10ms cadence inside logic */
+    { Vehicle_Task_10ms,          TS_PERIODICTY(10U),   INIT_VALUE },
 };
+
 /*******************************************************************************
  *  STATIC FUNCTION PROTOTYPES
  ******************************************************************************/
